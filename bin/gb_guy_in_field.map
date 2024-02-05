@@ -193,9 +193,9 @@ ROM0 bank #0:
 	         $100a = test_room_map_end
 	         $102a = test_room_mask_map
 	         $102a = test_room_walls_end
-	         $142a = EntryPoint
+	         $142a = start
 	         $142a = test_room_mask_map_end
-	         $143f = EntryPoint.clear_hram
+	         $143f = start.clear_hram
 	         $14ac = forever
 	         $14fd = WaitForVblank
 	         $1505 = WaitForVblank.wait
