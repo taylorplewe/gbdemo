@@ -1,9 +1,11 @@
 	; plr_bools
 		def PLR_BOOLS_FACING_L	= %00100000 ; same as OAMF_XFLIP
+		def PLR_BITN_FACING_L	= 5
 		def if_plr_facing_l		equs "if_bool_h plr_bools, 5"
 		def plr_clear_facing_l	equs "ldh a, [plr_bools]\nres 5, a\nldh [plr_bools], a"
 		def plr_set_facing_l	equs "ldh a, [plr_bools]\nset 5, a\nldh [plr_bools], a"
 		def PLR_BOOLS_GROUND	= %00000001
+		def PLR_BITN_GROUND		= 0
 		def if_plr_ground		equs "if_bool_h plr_bools, 0"
 		def plr_clear_ground	equs "ldh a, [plr_bools]\nres 0, a\nldh [plr_bools], a"
 		def plr_set_ground		equs "ldh a, [plr_bools]\nset 0, a\nldh [plr_bools], a"
@@ -29,13 +31,87 @@ def PLR_SHOOT_RELEASE_CTR_RUN_AMT = 8
 def PLR_CROUCH_TO_JUMP_CTR_AMT = 4
 def PLR_CROUCH_FROM_JUMP_CTR_AMT = 12
 
+macro plr_JumpCheck
+	if_btn pressed, a
+		ldh a, [txt_bools]
+		and TXT_BOOLS_ARROW | TXT_BOOLS_END
+		jr nz, :+
+		if_plr_ground
+		; start little crouching anim ctr
+			ld a, PLR_CROUCH_TO_JUMP_CTR_AMT
+			ldh [plr_crouch_to_jump_ctr], a
+			ld a, PLR_STATE_CROUCH
+			ldh [plr_state], a
+	:
+endm
+macro plr_Fall
+	ldh a, [plr_bools]
+	bit PLR_BITN_GROUND, a
+	jr nz, .end\@
+	; falling faster than terminal velocity?
+		ldh a, [plr_vspeed]
+		bit 7, a
+		jr nz, :+ ; vspeed is negative so no
+			cp high(PLR_TERM_VELO)
+			jr c, :+
+			ld a, [plr_vspeed+1]
+			cp low(PLR_TERM_VELO)
+			jr c, :+
+			; yes, set vspeed to terminal velocity and do not increase vspeed
+			st16_h plr_vspeed, PLR_TERM_VELO
+			jr .elev\@
+		:
+	; increase vertical speed by GRAVITY
+			ldh a, [plr_vspeed+1]
+			add low(GRAVITY)
+			ldh [plr_vspeed+1], a
+			ld l, a
+			ldh a, [plr_vspeed]
+			adc high(GRAVITY)
+			ldh [plr_vspeed], a
+			ld h, a
+		; positive? set state to fall
+		bit 7, a
+		jr nz, .elev\@
+		ld a, PLR_STATE_FALL
+		ldh [plr_state], a
+	.elev\@:
+		ldh a, [plr_elevation+1]
+		add l
+		ldh [plr_elevation+1], a
+		ldh a, [plr_elevation]
+		adc h
+		ldh [plr_elevation], a
+	; landed?
+		bit 7, a
+		jr nz, .end\@
+		; yes
+		jp plr_Ground
+	.end\@:
+endm
+macro plr_Shoot
+	if_btn released, b
+	ldh a, [plr_shoot_release_ctr]
+	and a
+	jr z, :+
+		; shoot
+		ld a, PLR_STATE_SHOOT
+		ldh [plr_state], a
+		ld a, SHOOT_CTR_AMT
+		ldh [plr_shoot_anim_ctr], a
+		ld a, SHOOT_STOP_CTR_AMT
+		ldh [plr_shoot_stop_ctr], a
+		call comm_WhiteFlash
+	:
+endm
+
 plr_Init:
 	plr_set_ground
 	ret
 
 plr_Update:
 	ldh a, [plr_shoot_stop_ctr]
-	cp 0
+	and a
 	jr z, :+
 		dec a
 		ldh [plr_shoot_stop_ctr], a
@@ -43,7 +119,7 @@ plr_Update:
 	:
 	
 	ldh a, [plr_crouch_to_jump_ctr]
-	cp 0
+	and a
 	jr z, :+
 		dec a
 		ldh [plr_crouch_to_jump_ctr], a
@@ -53,7 +129,7 @@ plr_Update:
 	:
 	
 	ldh a, [plr_crouch_from_jump_ctr]
-	cp 0
+	and a
 	jr z, :+
 		dec a
 		ldh [plr_crouch_from_jump_ctr], a
@@ -62,7 +138,7 @@ plr_Update:
 
 	; initial state = idle
 	ldh a, [plr_shoot_anim_ctr]
-	cp 0
+	and a
 	jr nz, :+
 	if_plr_ground
 		ld a, PLR_STATE_IDLE
@@ -85,9 +161,10 @@ plr_Update:
 	:
 
 	.mv_end:
-	call plr_Shoot
-	call plr_Fall
-	call plr_JumpCheck
+	
+	plr_Shoot
+	plr_Fall
+	plr_JumpCheck
 	
 	; shooting
 	ldh a, [plr_shoot_anim_ctr]
@@ -105,12 +182,11 @@ plr_Update:
 	ld b, a
 	ldh a, [plr_state]
 	cp b
-	jr z, :+
+	ret z
 		ldh [plr_state_prev], a
 		xor a
 		ldh [plr_frame], a
 		ldh [plr_frame+1], a
-	:
 	ret
 
 def PLR_RIGHT_LEEWAY = 4
@@ -142,7 +218,7 @@ plr_Move:
 		buttons_test_b b
 		jr z, :++
 			ldh a, [plr_shoot_release_ctr]
-			cp 0
+			and a
 			jr z, :+
 				dec a
 				ldh [plr_shoot_release_ctr], a
@@ -270,7 +346,7 @@ plr_Move:
 	.mv:
 		if_plr_ground
 		ldh a, [plr_crouch_from_jump_ctr]
-		cp 0
+		and a
 		jr nz, :+
 			ld a, PLR_STATE_WALK
 			ldh [plr_state], a
@@ -287,16 +363,16 @@ plr_Move:
 				ld l, a
 			; de
 				ldh a, [plr_Move_running]
-				cp 0
+				and a
 				jr z, :++
 					bit 7, d ; negative walk speed?
 					jr nz, :+
-						ld d, HIGH(RUN_SPEED)
-						ld e, LOW(RUN_SPEED)
+						ld d, high(RUN_SPEED)
+						ld e, low(RUN_SPEED)
 						jr :++
 					:
-						ld d, HIGH(RUN_SPEED * -1)
-						ld e, LOW(RUN_SPEED * -1)
+						ld d, high(RUN_SPEED * -1)
+						ld e, low(RUN_SPEED * -1)
 				:
 			add hl, de
 			; h = target collision check line, -- or |
@@ -346,84 +422,15 @@ plr_Move:
 
 def SHOOT_CTR_AMT = 64
 def SHOOT_STOP_CTR_AMT = 16
-plr_Shoot:
-	if_btn released, b, .end
-	ldh a, [plr_shoot_release_ctr]
-	cp 0
-	ret z
-	; shoot
-	ld a, PLR_STATE_SHOOT
-	ldh [plr_state], a
-	ld a, SHOOT_CTR_AMT
-	ldh [plr_shoot_anim_ctr], a
-	ld a, SHOOT_STOP_CTR_AMT
-	ldh [plr_shoot_stop_ctr], a
-	call comm_WhiteFlash
-	.end: ret
 
 def PLR_JUMP_VSPEED = -$0400
 def PLR_TERM_VELO	= $0400
 def GRAVITY			= $0040
-plr_Fall:
-	if_plr_ground
-		ret
-	:
-	; falling faster than terminal velocity?
-		ldh a, [plr_vspeed]
-		bit 7, a
-		jr nz, :+ ; vspeed is negative so no
-			cp HIGH(PLR_TERM_VELO)
-			jr c, :+
-			ld a, [plr_vspeed+1]
-			cp LOW(PLR_TERM_VELO)
-			jr c, :+
-			; yes, set vspeed to terminal velocity and do not increase vspeed
-			st16_h plr_vspeed, PLR_TERM_VELO
-			jr .elev
-		:
-	; increase vertical speed by GRAVITY
-			ldh a, [plr_vspeed+1]
-			add LOW(GRAVITY)
-			ldh [plr_vspeed+1], a
-			ld l, a
-			ldh a, [plr_vspeed]
-			adc HIGH(GRAVITY)
-			ldh [plr_vspeed], a
-			ld h, a
-		; positive? set state to fall
-		bit 7, a
-		jr nz, .elev
-		ld a, PLR_STATE_FALL
-		ldh [plr_state], a
-	.elev:
-		ldh a, [plr_elevation+1]
-		add l
-		ldh [plr_elevation+1], a
-		ldh a, [plr_elevation]
-		adc h
-		ldh [plr_elevation], a
-	; landed?
-		bit 7, a
-		ret nz
-		; yes
-		jp plr_Ground
-plr_JumpCheck:
-	if_btn pressed, a, .end
-	ldh a, [txt_bools]
-	and TXT_BOOLS_ARROW | TXT_BOOLS_END
-	ret nz
-	if_plr_ground, ret z
-	; start little crouching anim ctr
-		ld a, PLR_CROUCH_TO_JUMP_CTR_AMT
-		ldh [plr_crouch_to_jump_ctr], a
-		ld a, PLR_STATE_CROUCH
-		ldh [plr_state], a
-	.end: ret
 plr_Jump:
 	; set vspeed to PLR_JUMP_VSPEED
-		ld a, HIGH(PLR_JUMP_VSPEED)
+		ld a, high(PLR_JUMP_VSPEED)
 		ldh [plr_vspeed], a
-		ld a, LOW(PLR_JUMP_VSPEED)
+		ld a, low(PLR_JUMP_VSPEED)
 		ldh [plr_vspeed+1], a
 	; update bool and state
 		plr_clear_ground

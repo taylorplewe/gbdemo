@@ -7,7 +7,7 @@ comm_WhiteFlash:
 ; call during vblank
 comm_WhiteFlashDraw:
 	ldh a, [white_flash_ctr]
-	cp 0
+	and a
 	ret z
 	ld b, a
 	cp WHITE_FLASH_CTR_AMT - 2

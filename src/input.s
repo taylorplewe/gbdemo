@@ -49,7 +49,7 @@ GetInput:
 		call GetLowerNibble
 		and $0f
 		or b
-	xor $ff ; flip bits so 1 = button is pressed
+	cpl ; flip bits so 1 = button is pressed
 	; calc buttons_pressed
 		ld b, a
 		ldh a, [buttons_down]

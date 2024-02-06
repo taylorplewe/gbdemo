@@ -1,5 +1,5 @@
 macro invert_a
-	xor $ff
+	cpl
 	inc a
 endm
 
@@ -27,9 +27,9 @@ macro st16_h
 		ld a, \3
 		ldh [\1 + 1], a
 	else
-		ld a, HIGH(\2)
+		ld a, high(\2)
 		ldh [\1], a
-		ld a, LOW(\2)
+		ld a, low(\2)
 		ldh [\1 + 1], a
 	endc
 endm
@@ -66,19 +66,24 @@ _memcpy:
 	jr nz, _memcpy
 	ret
 
-macro memset
-	ld d, \1
-	ld hl, \2
-	ld bc, \3
-	call _memset
+macro memset8
+	ld de, \1
+	ld b, (\3)/8
+	ld hl, sp-2
+	st16_h sp_buff, h, l
+	ld hl, (\2) + (\3)
+	call _memset8
 endm
-_memset:
-	ld a, d
-	ld [hl+], a
-	dec bc
-	ld a, b
-	or c
-	jr nz, _memset
+_memset8:
+	ld sp, hl
+	.loop:
+		push de
+		push de
+		push de
+		push de
+		djnz .loop
+	ld16_h h, l, sp_buff
+	ld sp, hl
 	ret
 
 def push_all equs "push af\npush bc\npush de\npush hl\n"

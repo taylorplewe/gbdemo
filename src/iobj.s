@@ -9,7 +9,7 @@
 	rsset 1
 	def IOBJ_TYPE_SIGNPOST rb 1
 
-	def iobj_Clear equs "memset 0, IOBJ, 256"
+	def iobj_Clear equs "memset8 0, IOBJ, 256"
 
 iobj_UpdateAll:
 	ld hl, IOBJ

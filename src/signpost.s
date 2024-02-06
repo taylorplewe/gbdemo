@@ -24,7 +24,7 @@ def SIGNPOST_HEIGHT = 16
 ; params:
 	; d - index into IOBJ array
 signpost_Update:
-	ld h, HIGH(IOBJ)
+	ld h, high(IOBJ)
 	ld l, d
 	inc hl
 

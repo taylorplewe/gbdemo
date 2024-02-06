@@ -11,11 +11,11 @@ section "hram", hram
 	def LOCAL = _HRAM+10 ; 10 bytes for methods' local vars
 
 	; misc
-	def vblank_ready rb 1
 	def lcdc rb 1
 	def oam_free_addr rb 2
 	def white_flash_ctr rb 1
 	def frame_ctr rb 1
+	def sp_buff rw 1
 
 	def mask_vram_addr rb 2
 	def mask_vram_buff_addr rb 2
@@ -85,6 +85,8 @@ start:
 	; Shut down audio circuitry
 	xor a
 	ldh [rNR52], a
+
+	ld sp, $e000 ; get the stack out of hram
 	
 	; enable just vblank interrupt for now
 	ld a, IEF_VBLANK
@@ -92,9 +94,6 @@ start:
 
 	ld a, STATF_LYC
 	ldh [rSTAT], a
-
-	ld a, TACF_START | TACF_4KHZ
-	ldh [rTAC], a
 	
 	; clear HRAM
 	ld b, $ffff - (_HRAM+10)
@@ -102,8 +101,7 @@ start:
 	xor a
 	.clear_hram:
 		ld [hl+], a
-		dec b
-		jr nz, .clear_hram
+		djnz .clear_hram
 	
 	memcpy run_dma, _HRAM, run_dma_end - run_dma ; write DMA code to HRAM
 
@@ -118,7 +116,7 @@ start:
 
 	memcpy tiles, $8000, tiles_end - tiles
 	memcpy test_room_map, $9800, test_room_map_end - test_room_map
-	memset $80, $9c00, 1024
+	memset8 $8080, $9c00, 1024
 
 	; set palettes
 	ld a, %11_10_01_00
@@ -163,8 +161,8 @@ forever:
 	st16_h mask_vram_addr, $8400
 	st16_h mask_vram_buff_addr, MASK_VRAM_BUFF
 	st16_h oam_free_addr, SHADOW_OAM
-	memset 0, MASK_VRAM_BUFF, 256
-	memset 0, SHADOW_OAM, OAM_COUNT * sizeof_OAM_ATTRS
+	memset8 0, MASK_VRAM_BUFF, 256
+	memset8 0, SHADOW_OAM, OAM_COUNT * sizeof_OAM_ATTRS
 
 	call GetInput
 
@@ -180,13 +178,9 @@ forever:
 	jr forever
 
 WaitForVblank:
-	ld a, 1
-	ldh [vblank_ready], a
-	ld hl, vblank_ready
-	xor a
-	.wait:
-		cp [hl]
-		jr nz, .wait
+	scf
+	halt
+	jr c, WaitForVblank
 	ret
 
 vblank:
@@ -197,46 +191,26 @@ vblank:
 	call scr_DrawScroll
 	call comm_WhiteFlashDraw
 
-	; ; text
+	; text
 	call txt_DrawTxtbox
-	call txt_PrintChar
-	call txt_Clear
 
 	; vram buffer
 		ld hl, MASK_VRAM_BUFF
 		ld de, $8400
-		rept 16
-		ld a, [hl+]
-		ld [de], a
-		inc de
-		endr
-
-		ld e, $20
-		rept 16
-		ld a, [hl+]
-		ld [de], a
-		inc de
-		endr
-
-		ld e, $40
-		rept 16
-		ld a, [hl+]
-		ld [de], a
-		inc de
-		endr
-
-		ld e, $60
-		rept 16
-		ld a, [hl+]
-		ld [de], a
-		inc de
-		endr
-
-	; end
-	xor a
-	ldh [vblank_ready], a
+		ld b, 4
+		.vram_buff:
+			rept 16
+			ld a, [hl+]
+			ld [de], a
+			inc de
+			endr
+			ld a, e
+			add 16
+			ld e, a
+			djnz .vram_buff
 
 	pop_all
+	ccf ; let WaitForVBlank know who's the real slim shady (clear the carry flag)
 	reti
 
 stat:
@@ -252,7 +226,7 @@ stat:
 	reti
 
 run_dma:
-    ld a, HIGH(SHADOW_OAM)
+    ld a, high(SHADOW_OAM)
     ldh [rDMA], a  ; start DMA transfer (starts right after instruction)
     ld a, 40        ; delay for a total of 4×40 = 160 cycles
 	.wait
