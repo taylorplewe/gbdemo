@@ -91,9 +91,7 @@ macro plr_Fall
 endm
 macro plr_Shoot
 	if_btn released, b
-	ldh a, [plr_shoot_release_ctr]
-	and a
-	jr z, :+
+	if_nz_h plr_shoot_release_ctr
 		; shoot
 		ld a, PLR_STATE_SHOOT
 		ldh [plr_state], a
@@ -110,17 +108,13 @@ plr_Init:
 	ret
 
 plr_Update:
-	ldh a, [plr_shoot_stop_ctr]
-	and a
-	jr z, :+
+	if_nz_h plr_shoot_stop_ctr
 		dec a
 		ldh [plr_shoot_stop_ctr], a
 		jr .mv_end
 	:
 	
-	ldh a, [plr_crouch_to_jump_ctr]
-	and a
-	jr z, :+
+	if_nz_h plr_crouch_to_jump_ctr
 		dec a
 		ldh [plr_crouch_to_jump_ctr], a
 		jr nz, .mv_end
@@ -128,18 +122,14 @@ plr_Update:
 		jr .mv_end
 	:
 	
-	ldh a, [plr_crouch_from_jump_ctr]
-	and a
-	jr z, :+
+	if_nz_h plr_crouch_from_jump_ctr
 		dec a
 		ldh [plr_crouch_from_jump_ctr], a
 		jr .mv
 	:
 
 	; initial state = idle
-	ldh a, [plr_shoot_anim_ctr]
-	and a
-	jr nz, :+
+	if_z_h plr_shoot_anim_ctr
 	if_plr_ground
 		ld a, PLR_STATE_IDLE
 		ldh [plr_state], a
@@ -167,9 +157,7 @@ plr_Update:
 	plr_JumpCheck
 	
 	; shooting
-	ldh a, [plr_shoot_anim_ctr]
-	and a
-	jr z, :+
+	if_nz_h plr_shoot_anim_ctr
 		dec a
 		ldh [plr_shoot_anim_ctr], a
 		jr nz, :+
@@ -217,9 +205,7 @@ plr_Move:
 		ld b, a
 		buttons_test_b b
 		jr z, :++
-			ldh a, [plr_shoot_release_ctr]
-			and a
-			jr z, :+
+			if_nz_h plr_shoot_release_ctr
 				dec a
 				ldh [plr_shoot_release_ctr], a
 			:
@@ -345,9 +331,7 @@ plr_Move:
 		; h - new pos for plr pos var passed in by bc
 	.mv:
 		if_plr_ground
-		ldh a, [plr_crouch_from_jump_ctr]
-		and a
-		jr nz, :+
+		if_z_h plr_crouch_from_jump_ctr
 			ld a, PLR_STATE_WALK
 			ldh [plr_state], a
 		:
@@ -362,9 +346,7 @@ plr_Move:
 				ld a, [bc]
 				ld l, a
 			; de
-				ldh a, [plr_Move_running]
-				and a
-				jr z, :++
+				if_nz_h plr_Move_running, :++
 					bit 7, d ; negative walk speed?
 					jr nz, :+
 						ld d, high(RUN_SPEED)

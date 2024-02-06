@@ -40,6 +40,26 @@ macro hl_goto_hl
 	ld l, a
 endm
 
+macro if_z_h
+	ldh a, [\1]
+	and a
+	if _NARG == 1
+		jr nz, :+
+	else
+		jr nz, \2
+	endc
+endm
+
+macro if_nz_h
+	ldh a, [\1]
+	and a
+	if _NARG == 1
+		jr z, :+
+	else
+		jr z, \2
+	endc
+endm
+
 macro if_bool_h
 	ldh a, [\1]
 	bit \2, a

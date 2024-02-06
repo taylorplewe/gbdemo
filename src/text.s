@@ -52,9 +52,7 @@
 
 txt_Update:
 	; counter
-	ldh a, [txt_ctr]
-	and a
-	jr z, :+
+	if_nz_h txt_ctr
 		dec a
 		ldh [txt_ctr], a
 	:
