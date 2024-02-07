@@ -76,7 +76,7 @@ benji:
 	db "Dawg my butt hurts", 0
 	db "CONSEQUENCES "
 dawg:
-	db "Are you serious\nbro? >DO NOT come to my\nhouse, >DO NOT talk to my\nwife, >and DEFINITELY do\nnot shout at my >dog again. >THERE WILL BE\nCONSEQUENCES ", 0
+	db "Are you serious\nbro? >DO NOT come to my\nhouse, >DO NOT talk to my\nwife, >and DEFINITELY >do not shout at my\ndog again. >THERE WILL BE\nCONSEQUENCES ", 0
 
 txt_UpdateTxtboxPos:
 	; is textbox moving?

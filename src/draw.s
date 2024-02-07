@@ -47,8 +47,7 @@ draw_Mask:
 		and $f0
 		ld b, a
 		ldh a, [mask_vram_addr+1]
-		swap a
-		and $0f
+		sr4
 		or b
 		ld [hl+], a
 	; attr
@@ -213,3 +212,83 @@ draw_Mask_vram:
 			inc de
 			djnz .buff8loop
 		ret
+
+dust_tiles:
+	db $48, $4a, $4c, $4e
+def NUM_DUST_FRAMES = 4
+def DUST_FRAME_SPEED = $05
+def remove_dust equs "ld a, $ff\nldh [dust_x], a"
+; params:
+	; a - x
+	; b - y
+draw_CreateDust:
+	ldh [dust_x], a
+	ld a, b
+	ldh [dust_y], a
+	xor a
+	ldh [dust_frame], a
+	ret
+draw_Dust:
+	; is there dust?
+		ldh a, [dust_x]
+		cp $ff
+		ret z
+	; frame
+		ldh a, [dust_frame]
+		sr4
+		ld c, a
+		ld b, 0
+		ld hl, dust_tiles
+		add hl, bc
+		ld b, [hl]
+	; draw two dust sprites
+		ld16_h h, l, oam_free_addr
+	; 1
+		; y
+			ldh a, [scroll_y]
+			ld c, a
+			ldh a, [dust_y]
+			sub c
+			ld d, a
+			ld [hl+], a
+		; x
+			ldh a, [scroll_x]
+			ld c, a
+			ldh a, [dust_x]
+			sub c
+			ld e, a
+			add 13
+			ld [hl+], a
+		; tile
+			ld a, b
+			ld [hl+], a
+		; attr
+			ld a, OAMF_PAL1
+			ld [hl+], a
+	; 2
+		; y
+			ld a, d
+			ld [hl+], a
+		; x
+			ld a, e
+			sub 4
+			ld [hl+], a
+		; tile
+			ld a, b
+			ld [hl+], a
+		; attr
+			ld a, OAMF_PAL1 | OAMF_XFLIP
+			ld [hl+], a
+	st16_h oam_free_addr, h, l
+
+	; advance frame
+		ldh a, [dust_frame]
+		add DUST_FRAME_SPEED
+		ldh [dust_frame], a
+	; done?
+		sr4
+		cp NUM_DUST_FRAMES
+		ret nz
+		remove_dust
+
+	ret

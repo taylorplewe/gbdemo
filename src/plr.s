@@ -21,6 +21,7 @@
 		def PLR_STATE_WALK rb 1
 		def PLR_STATE_RUN rb 1
 		def PLR_STATE_SHOOT rb 1
+		def PLR_STATE_SHOOT_KICK rb 1
 		def PLR_STATE_JUMP rb 1
 		def PLR_STATE_FALL rb 1
 		def PLR_STATE_CROUCH rb 1
@@ -28,6 +29,7 @@
 def PLR_WIDTH = 16
 def PLR_HEIGHT = 16
 def PLR_SHOOT_RELEASE_CTR_RUN_AMT = 8
+def PLR_SHOOT_KICK_FRAMES = 8
 def PLR_CROUCH_TO_JUMP_CTR_AMT = 4
 def PLR_CROUCH_FROM_JUMP_CTR_AMT = 12
 
@@ -93,7 +95,7 @@ macro plr_Shoot
 	if_btn released, b
 	if_nz_h plr_shoot_release_ctr
 		; shoot
-		ld a, PLR_STATE_SHOOT
+		ld a, PLR_STATE_SHOOT_KICK
 		ldh [plr_state], a
 		ld a, SHOOT_CTR_AMT
 		ldh [plr_shoot_anim_ctr], a
@@ -161,8 +163,14 @@ plr_Update:
 		dec a
 		ldh [plr_shoot_anim_ctr], a
 		jr nz, :+
-		ld a, PLR_STATE_IDLE
-		ldh [plr_state], a
+			ld a, PLR_STATE_IDLE
+			ldh [plr_state], a
+			jr :++
+		:
+		cp SHOOT_CTR_AMT - PLR_SHOOT_KICK_FRAMES
+		jr nz, :+
+			ld a, PLR_STATE_SHOOT
+				ldh [plr_state], a
 	:
 
 	; if animation changed this frame, zero the frame #
@@ -432,7 +440,19 @@ plr_Ground:
 		ldh [plr_state], a
 		ld a, PLR_CROUCH_FROM_JUMP_CTR_AMT
 		ldh [plr_crouch_from_jump_ctr], a
-	ret
+	; dust anim
+		ldh a, [plr_y]
+		add 8 + 16
+		ld b, a
+		ld c, -3
+		if_plr_facing_l
+			ld c, -1
+		:
+		ldh a, [plr_x]
+		add 8
+		add c
+		jp draw_CreateDust ; call
+	; ret
 
 plr_Draw:
 	rsset LOCAL
@@ -542,7 +562,7 @@ plr_Draw:
 	; ret
 
 plr_DrawJumpShadow:
-	if_plr_ground
+	; if_plr_ground
 		ret
 	:
 	ld16_h h, l, oam_free_addr
@@ -758,7 +778,7 @@ plr_DrawShadow:
 	;		db 0, 8, $41, 0		''
 plr_tiles:
 	; by state
-	dw .stand, .walk, .run, .shoot, .jump, .fall, .crouch
+	dw .stand, .walk, .run, .shoot, .shoot_kick, .jump, .fall, .crouch
 
 	.stand:
 		db 0
@@ -840,6 +860,17 @@ plr_tiles:
 			db 0, 8, $26, 0
 			.shoot_0_:
 			dw .shoot_0_sh
+	.shoot_kick:
+		db 0
+		db (.shoot_kick_ - @) / 2
+		dw .shoot_kick_0
+		.shoot_kick_:
+		.shoot_kick_0:
+			db (.shoot_kick_0_ - @) / 4
+			db 0, 0, $50, 0
+			db 0, 8, $52, 0
+			.shoot_kick_0_:
+			dw .shoot_kick_0_sh
 	.jump:
 		db 0
 		db (.jump_ - @) / 2
@@ -927,6 +958,12 @@ plr_tiles:
 			dw $0138
 			db 2
 			dw $01b8
+			db 3
+	; shoot_kick
+		.shoot_kick_0_sh:
+			dw $00e8
+			db 2
+			dw $0068
 			db 3
 	; jump
 		.jump_0_sh:

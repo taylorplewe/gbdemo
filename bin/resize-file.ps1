@@ -1,13 +1,11 @@
 if ($args.length -lt 2) {
-	write-output "provide filename and size"
+	write-output "provide filename and length"
 	return
 }
-
-$filename = ""
-$filename += {get-location}
-$filename += $args[0]
-$f = new-object System.IO.FileStream $filename, Open, ReadWrite
-
-$f.SetLength($args[1])
-
-$f.Close()
+ 
+$bytes = @()
+get-content $args[0] -asbytestream | set-variable bytes
+ 
+$newEnd = $args[1] - 1
+$bytes = $bytes[0..$newEnd]
+$bytes | set-content $args[0] -asbytestream

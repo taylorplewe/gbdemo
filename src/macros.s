@@ -13,6 +13,11 @@ macro djnz
 	endc
 endm
 
+macro sr4
+	swap a
+	and $0f
+endm
+
 macro ld16_h
 	ldh a, [\3]
 	ld \1, a

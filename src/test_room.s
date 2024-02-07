@@ -5,6 +5,9 @@ test_room_Init:
 	ldh [plr_y], a
 
 	memcpy test_room_iobjs, IOBJ, test_room_iobjs_end-test_room_iobjs
+
+	xor a
+	ldh [dust_x], a
 	
 	ret
 

@@ -53,6 +53,10 @@ section "hram", hram
 	def plr_crouch_to_jump_ctr rb 1
 	def plr_crouch_from_jump_ctr rb 1
 
+	def dust_x rb 1
+	def dust_y rb 1
+	def dust_frame rb 1 ; aaaaffff | actual frame, fraction
+
 	; print how much hram space is left
 	def remaining_hram equ $ffff - _RS
 	println "  remaining hram: {u:remaining_hram}"
@@ -118,12 +122,16 @@ start:
 	memcpy test_room_map, $9800, test_room_map_end - test_room_map
 	memset8 $8080, $9c00, 1024
 
+	def BG_PAL		= %11_10_01_00
+	def OBJ1_PAL	= %11_10_00_00
+	def OBJ2_PAL	= %11_10_01_00
+
 	; set palettes
-	ld a, %11_10_01_00
+	ld a, BG_PAL
 	ldh [rBGP], a
-	ld a, %11_10_00_00
+	ld a, OBJ1_PAL
 	ldh [rOBP0], a
-	ld a, %00_00_01_00
+	ld a, OBJ2_PAL
 	ldh [rOBP1], a
 
 	; text
@@ -172,6 +180,7 @@ forever:
 	call txt_Update
 
 	call plr_Draw
+	call draw_Dust
 	
 	; wait for vblank interrupt
 	call WaitForVblank
@@ -189,7 +198,6 @@ vblank:
 
 	call _HRAM ; OAM DMA (draw sprites)
 	call scr_DrawScroll
-	call comm_WhiteFlashDraw
 
 	; text
 	call txt_DrawTxtbox
