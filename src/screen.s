@@ -34,14 +34,14 @@ scr_UpdateScroll:
 			ld b, a
 			ld a, d
 			sub b
-				ld hl, scroll_y+1
+				ld c, low(scroll_y+1)
 				call .shrink_and_add_scroll_diff
 		; x
 			ldh a, [scroll_x]
 			ld b, a
 			ld a, e
 			sub b
-				ld hl, scroll_x+1
+				ld c, low(scroll_x+1)
 		; 		call .shrink_and_add_scroll_diff
 		; ret
 
@@ -49,19 +49,20 @@ scr_UpdateScroll:
 		; a - diff to divide
 		; hl - scroll_?+1
 	.shrink_and_add_scroll_diff:
-		ld b, a
-		ld c, 0
+		ld h, a
+		ld l, 0
 		rept 5
-		sra b
-		rr c
+		sra h
+		rr l
 		endr
 		; add 16-bit scroll
-			ld a, [hl]
-			add c
-			ld [hl-], a
-			ld a, [hl]
-			adc b
-			ld [hl], a
+			ld a, [c]
+			add l
+			ld [c], a
+			dec c
+			ld a, [c]
+			adc h
+			ld [c], a
 		ret
 
 scr_DrawScroll:

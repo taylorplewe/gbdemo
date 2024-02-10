@@ -36,7 +36,7 @@
 	def txt_vram_addr_set_line1 equs "st16_h txt_vram_addr, high(TXT_LINE1_VRAM_ADDR), low(TXT_LINE1_VRAM_ADDR)"
 	def txt_vram_addr_set_line2 equs "st16_h txt_vram_addr, high(TXT_LINE2_VRAM_ADDR), low(TXT_LINE2_VRAM_ADDR)"
 
-	def ascii_to_tile_offs = 96
+	def ascii_to_tile_offs = 128
 	def convert_ascii_to_tile equs "add {ascii_to_tile_offs}"
 
 	def TXTBOX_SLIDE_SPD = 4
@@ -46,9 +46,9 @@
 	def TXTBOX_PAUSE_WAIT = 32
 	def TXTBOX_ANIM_WAIT = 20
 
-	def TXT_ARROW_DOWN_TILE = $85
-	def TXT_ARROW_UP_TILE = $86
-	def TXT_END_TILE = $8a
+	def TXT_ARROW_DOWN_TILE = $a5
+	def TXT_ARROW_UP_TILE = $a6
+	def TXT_END_TILE = $aa
 
 txt_Update:
 	; counter

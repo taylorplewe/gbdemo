@@ -120,7 +120,7 @@ start:
 
 	memcpy tiles, $8000, tiles_end - tiles
 	memcpy test_room_map, $9800, test_room_map_end - test_room_map
-	memset8 $8080, $9c00, 1024
+	memset8 $a0a0, $9c00, 1024
 
 	def BG_PAL		= %11_10_01_00
 	def OBJ1_PAL	= %11_10_00_00

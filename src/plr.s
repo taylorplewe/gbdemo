@@ -230,6 +230,7 @@ plr_Move:
 		jr z, .d
 			push bc
 			plr_Move_mv plr_y, -WALK_SPEED
+			jr nc, :+
 			; TL
 				ldh a, [plr_x]
 				add PLR_LEFT_LEEWAY
@@ -257,6 +258,9 @@ plr_Move:
 		jr z, .l
 			push bc
 			plr_Move_mv plr_y, WALK_SPEED
+			ld a, PLR_HEIGHT
+			add h
+			jr c, :+
 			; BL
 				ldh a, [plr_x]
 				add PLR_LEFT_LEEWAY
@@ -287,6 +291,7 @@ plr_Move:
 		jr z, .r
 			plr_set_facing_l
 			plr_Move_mv plr_x, -WALK_SPEED
+			ret nc
 			; TL
 				ldh a, [plr_y]
 				add 8
@@ -313,6 +318,9 @@ plr_Move:
 			; plr_Move_mv plr_x, WALK_SPEED
 			plr_clear_facing_l
 			plr_Move_mv plr_x, WALK_SPEED
+			ld a, PLR_WIDTH
+			add h
+			ret c
 			; TR
 				ldh a, [plr_y]
 				add 8
@@ -336,6 +344,7 @@ plr_Move:
 		; bc - addr of plr pos var to be affected
 		; de - walk speed, pos or neg
 	; returns:
+		; carry - 1 if hitting border, 0 if free
 		; h - new pos for plr pos var passed in by bc
 	.mv:
 		if_plr_ground
