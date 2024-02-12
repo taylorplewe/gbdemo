@@ -5,9 +5,10 @@ test_room_Init:
 	ldh [plr_y], a
 
 	memcpy test_room_iobjs, IOBJ, test_room_iobjs_end-test_room_iobjs
+	memcpy test_room_map, $9800, test_room_map_end - test_room_map
 
-	xor a
-	ldh [dust_x], a
+	; xor a
+	; ldh [dust_x], a
 	
 	ret
 

@@ -292,3 +292,51 @@ draw_Dust:
 		remove_dust
 
 	ret
+
+	def BG_PAL		= %11_10_01_00
+	def OBJ1_PAL	= %11_10_00_00
+	def OBJ2_PAL	= %11_10_01_00
+
+draw_pals_to_white:
+	db BG_PAL, OBJ1_PAL, OBJ2_PAL,
+	; BG_PAL - $55?
+	db low(BG_PAL << 2), low(OBJ1_PAL << 2), low(OBJ2_PAL << 2),
+	db low(BG_PAL << 4), low(OBJ1_PAL << 4), low(OBJ2_PAL << 4),
+	db 0, 0, 0
+draw_pals_to_white_end:
+
+draw_FadeToWhite:
+	ld hl, draw_pals_to_white + 3
+	ld b, 3
+	.loop:
+		ld a, [hl+]
+		ldh [rBGP], a
+		ld a, [hl+]
+		ldh [rOBP0], a
+		ld a, [hl+]
+		ldh [rOBP1], a
+		dec b
+		ret z
+		rept 4
+		vbl
+		endr
+		jr .loop
+	ret
+
+draw_FadeToPal:
+	ld hl, draw_pals_to_white_end - 4
+	ld b, 3
+	.loop:
+		ld a, [hl-]
+		ldh [rOBP1], a
+		ld a, [hl-]
+		ldh [rOBP0], a
+		ld a, [hl-]
+		ldh [rBGP], a
+		dec b
+		ret z
+		rept 4
+		vbl
+		endr
+		jr .loop
+	ret

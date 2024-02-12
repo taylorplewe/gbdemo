@@ -101,6 +101,9 @@ macro plr_Shoot
 		ldh [plr_shoot_anim_ctr], a
 		ld a, SHOOT_STOP_CTR_AMT
 		ldh [plr_shoot_stop_ctr], a
+		ld a, 100
+		ld hl, snd_shoot
+		call snd_Play
 		call comm_WhiteFlash
 	:
 endm
@@ -449,6 +452,10 @@ plr_Ground:
 		ldh [plr_state], a
 		ld a, PLR_CROUCH_FROM_JUMP_CTR_AMT
 		ldh [plr_crouch_from_jump_ctr], a
+	; land sound
+		xor a
+		ld hl, snd_land
+		call snd_Play
 	; dust anim
 		ldh a, [plr_y]
 		add 8 + 16
@@ -550,25 +557,72 @@ plr_Draw:
 	st16_h oam_free_addr, b, c
 	call plr_DrawShadow ; hl is now conveniently pointing at the shadow data
 	; update plr_frame
+		ld b, 0 ; whether anim frame advanced this frame
 		ldh a, [plr_Draw_anim_spd]
 		ld l, a
 		ldh a, [plr_frame+1]
 		add l
 		ldh [plr_frame+1], a
-		ldh a, [plr_frame]
-		adc 0
-		ldh [plr_frame], a
+		jr nc, :+
+			ldh a, [plr_frame]
+			inc a
+			ldh [plr_frame], a
+			inc b
+		:
 		ld l, a
 	; mod plr_frame by # of frames in the anim
 		pop af ; get # frames
 		cp l
-		jr z, :+
+		jr nz, :+
 			; ret nc
-			jr nc, plr_DrawJumpShadow
+			; ret
+			; jr nc, plr_DrawJumpShadow
+		; :
+			xor a
+			ldh [plr_frame], a
+			ld l, a
+	:
+	ld a, b
+	and a
+	ret z
+
+; some animations come with sounds e.g. footsteps
+plr_AdvanceFrameAndPlaySound:
+	; play sound?
+	ldh a, [plr_state]
+	cp PLR_STATE_WALK
+	jr nz, .run
+		ld a, l ; frame #
+		and a
+		jr nz, :+
+			; footstep1
+			xor a
+			ld hl, snd_footstep1
+			jp snd_Play
 		:
-		xor a
-		ldh [plr_frame], a
-	; ret
+		cp 2
+		ret nz
+			; footstep2
+			xor a
+			ld hl, snd_footstep2
+			jp snd_Play
+	.run:
+	cp PLR_STATE_RUN
+	ret nz
+		ld a, l
+		cp 1
+		jr nz, :+
+			; footstep1
+			xor a
+			ld hl, snd_footstep1
+			jp snd_Play
+		:
+		cp 4
+		ret nz
+			; footstep2
+			xor a
+			ld hl, snd_footstep2
+			jp snd_Play
 
 plr_DrawJumpShadow:
 	; if_plr_ground

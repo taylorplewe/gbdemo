@@ -11,6 +11,7 @@ section "hram", hram
 	def LOCAL = _HRAM+10 ; 10 bytes for methods' local vars
 
 	; misc
+	def on_title rb 1
 	def lcdc rb 1
 	def oam_free_addr rb 2
 	def white_flash_ctr rb 1
@@ -57,6 +58,12 @@ section "hram", hram
 	def dust_y rb 1
 	def dust_frame rb 1 ; aaaaffff | actual frame, fraction
 
+	; sound
+	def snd_next_addr rw 1
+	def snd_next_count rb 1
+	def snd_noise_busy_ctr rb 1
+	def snd_noise_vibrato_xor rb 1
+
 	; print how much hram space is left
 	def remaining_hram equ $ffff - _RS
 	println "  remaining hram: {u:remaining_hram}"
@@ -79,11 +86,13 @@ section "Header", ROM0[$100]
 	include "src/comm.s"
 	include "src/input.s"
 	include "src/text.s"
+	include "src/sound.s"
 	include "src/screen.s"
 	include "src/draw.s"
 	include "src/plr.s"
 	include "src/iobj.s"
 	include "src/test_room.s"
+	include "src/title.s"
 
 start:
 	; Shut down audio circuitry
@@ -111,7 +120,7 @@ start:
 
 	; Do not turn the LCD off outside of VBlank
 	ei
-	call WaitForVblank
+	vbl
 	di
 
 	; Turn the LCD off
@@ -119,33 +128,50 @@ start:
 	ldh [rLCDC], a
 
 	memcpy tiles, $8000, tiles_end - tiles
-	memcpy test_room_map, $9800, test_room_map_end - test_room_map
 	memset8 $a0a0, $9c00, 1024
+	memset8 0, SHADOW_OAM, OAM_COUNT * sizeof_OAM_ATTRS
 
-	def BG_PAL		= %11_10_01_00
-	def OBJ1_PAL	= %11_10_00_00
-	def OBJ2_PAL	= %11_10_01_00
-
-	; set palettes
-	ld a, BG_PAL
+	; set palettes to all white
+	xor a
 	ldh [rBGP], a
-	ld a, OBJ1_PAL
 	ldh [rOBP0], a
-	ld a, OBJ2_PAL
 	ldh [rOBP1], a
 
 	; text
+	ldh [rWY], a ; 0 for title first
 	ld a, SCRN_Y
-	ldh [rWY], a
 	ldh [txtbox_y], a
 	ld a, 7
 	ldh [rWX], a
 
+	; turn sound on
+	ld a, AUDENA_ON
+	ldh [rNR52], a
+	ld a, $ff
+	ldh [rNR51], a
+	ldh [rNR50], a
+	
+	call title_Init
+	println {@}
+	ld hl, on_title
+	inc [hl]
+	ld a, LCDCF_ON | LCDCF_BGON | LCDCF_WINON | LCDCF_BLK21 | LCDCF_WIN9C00
+	ldh [rLCDC], a
+	ei
+	vbl
+	call draw_FadeToPal
+	call title_Update
+
+	vbl
+	di
+	xor a
+	ldh [rLCDC], a
+	ldh [on_title], a
 	iobj_Clear
 	call plr_Init
 	call test_room_Init
 
-	; enable all interrupts
+	; enable interrupts
 	ld a, IEF_VBLANK | IEF_STAT
 	ldh [rIE], a
 
@@ -155,6 +181,7 @@ start:
 	ldh [lcdc], a
 	
 	ei
+	call draw_FadeToPal
 
 forever:
 	ld hl, frame_ctr
@@ -178,23 +205,22 @@ forever:
 	call iobj_UpdateAll
 	call plr_Update
 	call txt_Update
+	call snd_Update
 
 	call plr_Draw
 	call draw_Dust
 	
 	; wait for vblank interrupt
-	call WaitForVblank
+	vbl
 	jr forever
-
-WaitForVblank:
-	scf
-	halt
-	jr c, WaitForVblank
-	ret
 
 vblank:
 	di
 	push_all
+
+	ldh a, [on_title]
+	and a
+	jr nz, .end
 
 	call _HRAM ; OAM DMA (draw sprites)
 	call scr_DrawScroll
@@ -217,8 +243,9 @@ vblank:
 			ld e, a
 			djnz .vram_buff
 
+	.end:
 	pop_all
-	ccf ; let WaitForVBlank know who's the real slim shady (clear the carry flag)
+	ccf ; let comm_WaitForVblank know who's the real slim shady (clear the carry flag)
 	reti
 
 stat:

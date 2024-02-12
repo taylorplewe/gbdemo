@@ -204,6 +204,12 @@ txt_PrepChar:
 			:
 	; tell vblank to write this char
 	convert_ascii_to_tile
+	; regular character, play sound
+	push_all
+	xor a
+	ld hl, snd_char
+	call snd_Play
+	pop_all
 	.to_print:
 		ldh [txt_char_tile], a
 		txt_set_printchr

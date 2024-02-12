@@ -1,11 +1,15 @@
+def vbl equs "call comm_WaitForVblank"
+
 comm_WhiteFlash:
-	call WaitForVblank
+	call snd_Update
+	vbl
 		xor a ; white
 		ldh [rBGP], a
 		ldh [rOBP0], a
 		ldh [rOBP1], a
 	rept 3
-	call WaitForVblank
+	call snd_Update
+	vbl
 	endr
 		ld a, BG_PAL
 		ldh [rBGP], a
@@ -13,5 +17,13 @@ comm_WhiteFlash:
 		ldh [rOBP0], a
 		ld a, OBJ2_PAL
 		ldh [rOBP1], a
-	jp WaitForVblank
+	call snd_Update
+	; jp comm_WaitForVblank
 	; ret
+
+; vbl
+comm_WaitForVblank:
+	scf
+	halt
+	jr c, comm_WaitForVblank
+	ret
