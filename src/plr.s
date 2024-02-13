@@ -624,55 +624,6 @@ plr_AdvanceFrameAndPlaySound:
 			ld hl, snd_footstep2
 			jp snd_Play
 
-plr_DrawJumpShadow:
-	; if_plr_ground
-		ret
-	:
-	ld16_h h, l, oam_free_addr
-	; Y
-		ldh a, [scroll_y]
-		ld b, a
-		ldh a, [plr_y]
-		add 16
-		sub b
-		ld [hl+], a
-	; X
-		ldh a, [scroll_x]
-		ld b, a
-		ldh a, [plr_x]
-		add 8
-		sub b
-		ld b, a
-		if_plr_facing_l
-			ld a, 3
-			jr :++
-		:
-			ld a, 2
-		:
-		add b
-		ld [hl+], a
-	; tile
-		ldh a, [plr_elevation]
-		cp -24
-		jr c, .t3
-		cp -12
-		jr c, .t2
-		.t1:
-			ld a, $34
-			jr :+
-		.t2:
-			ld a, $36
-			jr :+
-		.t3:
-			ld a, $38
-		:
-		ld [hl+], a
-	; attr
-		ld a, OAMF_PAL0
-		ld [hl+], a
-	st16_h oam_free_addr, h, l
-	ret
-
 ; params:
 	; hl - pointer to shadow data for current frame
 plr_DrawShadow:
