@@ -64,6 +64,7 @@ section "hram", hram
 	def shell_xspeed rw 1 ; byte 2 = fraction
 	def shell_yspeed rw 1 ; byte 2 = fraction
 	def shell_zspeed rw 1 ; byte 2 = fraction
+	def shell_next_addr rb 1 ; low
 	def dust_x rb 1
 	def dust_y rb 1
 	def dust_frame rb 1 ; aaaaffff | actual frame, fraction
