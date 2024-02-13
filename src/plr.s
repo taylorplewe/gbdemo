@@ -881,8 +881,8 @@ plr_tiles:
 		.shoot_kick_:
 		.shoot_kick_0:
 			db (.shoot_kick_0_ - @) / 4
-			db 0, 0, $50, 0
-			db 0, 8, $52, 0
+			db 0, 0, $34, 0
+			db 0, 8, $36, 0
 			.shoot_kick_0_:
 			dw .shoot_kick_0_sh
 	.jump:

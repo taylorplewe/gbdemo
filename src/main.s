@@ -2,9 +2,12 @@ include "src/hardware.inc"
 
 ; c100.c1a0 = shadow OAM
 def SHADOW_OAM	= $c100
-; c200.c300 = invisible/inanimate objects
-	; / 6 = 42 slots
+; c200.c280 = invisible/inanimate objects
+	; / 6 = 21 slots
 def IOBJ		= $c200
+; c280.c300 = bullet shells
+	; / 16 = 8 slots
+def SHELLS		= $c280
 
 section "hram", hram
 	rsset _HRAM+20 ; make room for DMA transfer code (run_dma) and local vars
@@ -54,6 +57,13 @@ section "hram", hram
 	def plr_crouch_to_jump_ctr rb 1
 	def plr_crouch_from_jump_ctr rb 1
 
+	; effects
+	def shell_x rw 1 ; byte 2 = fraction
+	def shell_y rw 1 ; byte 2 = fraction
+	def shell_z rw 1 ; byte 2 = fraction
+	def shell_xspeed rw 1 ; byte 2 = fraction
+	def shell_yspeed rw 1 ; byte 2 = fraction
+	def shell_zspeed rw 1 ; byte 2 = fraction
 	def dust_x rb 1
 	def dust_y rb 1
 	def dust_frame rb 1 ; aaaaffff | actual frame, fraction
@@ -62,7 +72,6 @@ section "hram", hram
 	def snd_next_addr rw 1
 	def snd_next_count rb 1
 	def snd_noise_busy_ctr rb 1
-	def snd_noise_vibrato_xor rb 1
 
 	; print how much hram space is left
 	def remaining_hram equ $ffff - _RS
@@ -91,6 +100,7 @@ section "Header", ROM0[$100]
 	include "src/draw.s"
 	include "src/plr.s"
 	include "src/iobj.s"
+	include "src/shells.s"
 	include "src/test_room.s"
 	include "src/title.s"
 
@@ -209,6 +219,7 @@ forever:
 
 	call scr_UpdateScroll
 	call iobj_UpdateAll
+	call shells_UpdateAll
 	call plr_Update
 	call txt_Update
 	call snd_Update

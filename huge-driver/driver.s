@@ -1,11 +1,11 @@
 include "huge-driver/hUGE.inc"
 
 macro add_a_to_r16
-    add LOW(\1)
-    ld LOW(\1), a
-    adc HIGH(\1)
-    sub LOW(\1)
-    ld HIGH(\1), a
+    add low(\1)
+    ld low(\1), a
+    adc high(\1)
+    sub low(\1)
+    ld high(\1), a
 endm
 
 ; thanks PinoBatch!
@@ -138,7 +138,7 @@ ds 4
 
 end_zero:
 
-SECTION "Sound Driver", ROM0
+section "Sound Driver", rom0
 
 ; sets up hUGEDriver to play a song.
 ; !!! BE SURE THAT `hUGE_dosound` WILL NOT BE CALLED WHILE THIS RUNS !!!
@@ -158,21 +158,21 @@ hUGE_init:
     ld c, _end_song_descriptor_pointers - (_start_song_descriptor_pointers)
     ld de, order1
 
-.copy_song_descriptor_loop:
-    ld a, [hl+]
-    ld [de], a
-    inc de
-    dec c
-    jr nz, .copy_song_descriptor_loop
+    .copy_song_descriptor_loop:
+        ld a, [hl+]
+        ld [de], a
+        inc de
+        dec c
+        jr nz, .copy_song_descriptor_loop
 
     ; zero some ram
     ld c, end_zero - start_zero
     ld hl, start_zero
     xor a
-.fill_loop:
-    ld [hl+], a
-    dec c
-    jr nz, .fill_loop
+    .fill_loop:
+        ld [hl+], a
+        dec c
+        jr nz, .fill_loop
 
     ; these two are zero-initialized by the loop above, so these two writes must come after
     ld a, %11110000
@@ -203,22 +203,22 @@ load_patterns:
     ; ld hl, order4
     ; fallthrough
 
-.load_pattern:
-    ld a, [hl+]
-    add c
-    ld h, [hl]
-    ld l, a
-    adc h
-    sub l
-    ld h, a
+    .load_pattern:
+        ld a, [hl+]
+        add c
+        ld h, [hl]
+        ld l, a
+        adc h
+        sub l
+        ld h, a
 
-    ld a, [hl+]
-    ld [de], a
-    inc de
-    ld a, [hl]
-    ld [de], a
-    inc de
-    ret
+        ld a, [hl+]
+        ld [de], a
+        inc de
+        ld a, [hl]
+        ld [de], a
+        inc de
+        ret
 
 
 ; reads a pattern's current row.
@@ -230,7 +230,7 @@ load_patterns:
 ; destroy: HL
 get_current_row:
     ld a, [row]
-.row_in_a:
+    .row_in_a:
     ld h, a
     ; multiply by 3 for the note value
     add h
@@ -318,49 +318,49 @@ ptr_to_channel_member:
 ; destroy: (for CH4) HL
 update_channel_freq:
     ld h, 0
-.nonzero_highmask:
-    ld c, b
-    ld a, [mute_channels]
-    dec c
-    jr z, .update_channel2
-    dec c
-    jr z, .update_channel3
+    .nonzero_highmask:
+        ld c, b
+        ld a, [mute_channels]
+        dec c
+        jr z, .update_channel2
+        dec c
+        jr z, .update_channel3
 
-.update_channel1:
-    retMute 0
+    .update_channel1:
+        retMute 0
 
-    ld a, e
-    ld [channel_period1], a
-    ldh [rAUD1LOW], a
-    ld a, d
-    ld [channel_period1+1], a
-    or h
-    ldh [rAUD1HIGH], a
-    ret
+        ld a, e
+        ld [channel_period1], a
+        ldh [rAUD1LOW], a
+        ld a, d
+        ld [channel_period1+1], a
+        or h
+        ldh [rAUD1HIGH], a
+        ret
 
-.update_channel2:
-    retMute 1
+    .update_channel2:
+        retMute 1
 
-    ld a, e
-    ld [channel_period2], a
-    ldh [rAUD2LOW], a
-    ld a, d
-    ld [channel_period2+1], a
-    or h
-    ldh [rAUD2HIGH], a
-    ret
+        ld a, e
+        ld [channel_period2], a
+        ldh [rAUD2LOW], a
+        ld a, d
+        ld [channel_period2+1], a
+        or h
+        ldh [rAUD2HIGH], a
+        ret
 
-.update_channel3:
-    retMute 2
+    .update_channel3:
+        retMute 2
 
-    ld a, e
-    ld [channel_period3], a
-    ldh [rAUD3LOW], a
-    ld a, d
-    ld [channel_period3+1], a
-    or h
-    ldh [rAUD3HIGH], a
-    ret
+        ld a, e
+        ld [channel_period3], a
+        ldh [rAUD3LOW], a
+        ld a, d
+        ld [channel_period3+1], a
+        or h
+        ldh [rAUD3HIGH], a
+        ret
 
 play_note_routines:
     jr play_ch1_note
@@ -455,19 +455,19 @@ do_table:
     and $F0
     bit 7, d
     jr z, .no_steal
-    res 7, d
-    set 0, a
-.no_steal:
-    swap a
-    jr z, .no_jump
-    dec a
-    ld [hl], a
+        res 7, d
+        set 0, a
+    .no_steal:
+        swap a
+        jr z, .no_jump
+        dec a
+        ld [hl], a
 
-.no_jump:
-    ld a, d
-    ; if there's no note, don't update channel fr=encies
-    cp NO_NOTE
-    jr z, .no_note2
+    .no_jump:
+        ld a, d
+        ; if there's no note, don't update channel fr=encies
+        cp NO_NOTE
+        jr z, .no_note2
 
     sub 36 ; bring the number back in the range of -36, +35
 
@@ -495,16 +495,16 @@ do_table:
     call get_note_period
     ld d, h
     ld e, l
-.is_ch4:
-    ld h, c
-    res 7, h
-    dec b
-    call update_channel_freq.nonzero_highmask
+    .is_ch4:
+        ld h, c
+        res 7, h
+        dec b
+        call update_channel_freq.nonzero_highmask
 
-.no_note:
-    ld e, b
-.no_note2:
-    pop bc
+    .no_note:
+        ld e, b
+    .no_note2:
+        pop bc
 
     ld d, 1
     jr do_effect.no_set_offset
@@ -517,11 +517,11 @@ do_table:
 do_effect:
     ; return immediately if effect is 000
     ld d, 0
-.no_set_offset:
-    ld a, b
-    and $0F
-    or c
-    ret z
+    .no_set_offset:
+        ld a, b
+        and $0F
+        or c
+        ret z
 
     ; strip the instrument bits off leaving only effect code
     ld a, b
@@ -541,30 +541,30 @@ do_effect:
     bit 0, d
     jr z, .no_offset
     inc hl
-.no_offset:
-    ld b, e
-    ld a, [tick]
-    or a ; we can return right off the bat if it's tick zero
-    jp hl
+    .no_offset:
+        ld b, e
+        ld a, [tick]
+        or a ; we can return right off the bat if it's tick zero
+        jp hl
 
-.jump:
-    ; jump table for effect
-    dw 0                               ;0xy
-    dw 0                               ;1xy
-    dw 0                               ;2xy
-    dw 0                               ;3xy
-    dw 0                               ;4xy
-    dw 0                               ;5xy ; global
-    dw 0                               ;6xy
-    dw 0                               ;7xy
-    dw fx_set_pan                      ;8xy ; global
-    dw 0                               ;9xy
-    dw 0                               ;Axy
-    dw fx_pos_jump                     ;Bxy ; global
-    dw 0                               ;Cxy
-    dw fx_pattern_break                ;Dxy ; global
-    dw 0                               ;Exy
-    dw 0                               ;Fxy ; global
+    .jump:
+        ; jump table for effect
+        dw 0                               ;0xy
+        dw 0                               ;1xy
+        dw 0                               ;2xy
+        dw 0                               ;3xy
+        dw 0                               ;4xy
+        dw 0                               ;5xy ; global
+        dw 0                               ;6xy
+        dw 0                               ;7xy
+        dw fx_set_pan                      ;8xy ; global
+        dw 0                               ;9xy
+        dw 0                               ;Axy
+        dw fx_pos_jump                     ;Bxy ; global
+        dw 0                               ;Cxy
+        dw fx_pattern_break                ;Dxy ; global
+        dw 0                               ;Exy
+        dw 0                               ;Fxy ; global
 
 ; processes (global) effect 8, "set pan".
 ; param: B = Current channel ID (0 = CH1, 1 = CH2, etc.)
@@ -626,10 +626,10 @@ fx_pos_jump:
     or [hl] ; a = 0 since we know we're on tick 0
     jr nz, .already_broken
     ld [hl], 1
-.already_broken:
-    inc hl
-    ld [hl], c
-    ret
+    .already_broken:
+        inc hl
+        ld [hl], c
+        ret
 
 
 ; processes (global) effect D, "pattern break".
@@ -656,17 +656,17 @@ setup_instrument_pointer:
     ret z ; if there's no instrument, then return early.
 
     dec a ; instrument 0 is "no instrument"
-.finish:
-    ; multiply by 6
-    add a
-    ld e, a
-    add a
-    add e
+    .finish:
+        ; multiply by 6
+        add a
+        ld e, a
+        add a
+        add e
 
-    add_a_to_r16 hl
+        add_a_to_r16 hl
 
-    rla ; reset the Z flag
-    ret
+        rla ; reset the Z flag
+        ret
 
 ; ticks the sound engine once.
 ; destroy: AF BC DE HL
@@ -691,52 +691,52 @@ hUGE_dosound:
     ld [channel_period1], a
     ld a, h
     ld [channel_period1+1], a
-.toneporta:
+    .toneporta:
 
-    ld hl, duty_instruments
-    ld a, [hl+]
-    ld h, [hl]
-    ld l, a
-    call setup_instrument_pointer
-    ld a, [highmask1]
-    res 7, a ; turn off the "initial" flag
-    jr z, .write_mask1
+        ld hl, duty_instruments
+        ld a, [hl+]
+        ld h, [hl]
+        ld l, a
+        call setup_instrument_pointer
+        ld a, [highmask1]
+        res 7, a ; turn off the "initial" flag
+        jr z, .write_mask1
 
-    checkMute 0, .do_setvol1
+        checkMute 0, .do_setvol1
 
-    ld a, [hl+]
-    ldh [rAUD1SWEEP], a
-    ld a, [hl+]
-    ldh [rAUD1LEN], a
-    ld a, [hl+]
-    ldh [rAUD1ENV], a
-    ld a, [hl+]
-    ld [table1], a
-    ld a, [hl+]
-    ld [table1+1], a
-    xor a
-    ld [table_row1], a
+        ld a, [hl+]
+        ldh [rAUD1SWEEP], a
+        ld a, [hl+]
+        ldh [rAUD1LEN], a
+        ld a, [hl+]
+        ldh [rAUD1ENV], a
+        ld a, [hl+]
+        ld [table1], a
+        ld a, [hl+]
+        ld [table1+1], a
+        xor a
+        ld [table_row1], a
 
-    ld a, [hl]
+        ld a, [hl]
 
-.write_mask1:
-    ld [highmask1], a
+    .write_mask1:
+        ld [highmask1], a
 
-.do_setvol1:
-    ld e, 0
-    call do_effect
+    .do_setvol1:
+        ld e, 0
+        call do_effect
 
-    pop af
-    call c, play_ch1_note
+        pop af
+        call c, play_ch1_note
 
-    ld a, [table1]
-    ld c, a
-    ld a, [table1+1]
-    ld b, a
-    or c
-    ld hl, table_row1
-    ld e, 0
-    call nz, do_table
+        ld a, [table1]
+        ld c, a
+        ld a, [table1+1]
+        ld b, a
+        or c
+        ld hl, table_row1
+        ld e, 0
+        call nz, do_table
 
 process_ch2:
     ; note playback
@@ -755,52 +755,52 @@ process_ch2:
     ld [channel_period2], a
     ld a, h
     ld [channel_period2+1], a
-.toneporta:
+    .toneporta:
 
-    ld hl, duty_instruments
-    ld a, [hl+]
-    ld h, [hl]
-    ld l, a
-    call setup_instrument_pointer
-    ld a, [highmask2]
-    res 7, a ; turn off the "initial" flag
-    jr z, .write_mask2
+        ld hl, duty_instruments
+        ld a, [hl+]
+        ld h, [hl]
+        ld l, a
+        call setup_instrument_pointer
+        ld a, [highmask2]
+        res 7, a ; turn off the "initial" flag
+        jr z, .write_mask2
 
-    checkMute 1, .do_setvol2
+        checkMute 1, .do_setvol2
 
-    inc hl
+        inc hl
 
-    ld a, [hl+]
-    ldh [rAUD2LEN], a
-    ld a, [hl+]
-    ldh [rAUD2ENV], a
-    ld a, [hl+]
-    ld [table2], a
-    ld a, [hl+]
-    ld [table2+1], a
-    xor a
-    ld [table_row2], a
+        ld a, [hl+]
+        ldh [rAUD2LEN], a
+        ld a, [hl+]
+        ldh [rAUD2ENV], a
+        ld a, [hl+]
+        ld [table2], a
+        ld a, [hl+]
+        ld [table2+1], a
+        xor a
+        ld [table_row2], a
 
-    ld a, [hl]
+        ld a, [hl]
 
-.write_mask2:
-    ld [highmask2], a
+    .write_mask2:
+        ld [highmask2], a
 
-.do_setvol2:
-    ld e, 1
-    call do_effect
+    .do_setvol2:
+        ld e, 1
+        call do_effect
 
-    pop af
-    call c, play_ch2_note
+        pop af
+        call c, play_ch2_note
 
-    ld a, [table2]
-    ld c, a
-    ld a, [table2+1]
-    ld b, a
-    or c
-    ld hl, table_row2
-    ld e, 1
-    call nz, do_table
+        ld a, [table2]
+        ld c, a
+        ld a, [table2+1]
+        ld b, a
+        or c
+        ld hl, table_row2
+        ld e, 1
+        call nz, do_table
 
 process_ch3:
     ld hl, pattern3
@@ -818,66 +818,66 @@ process_ch3:
     ld [channel_period3], a
     ld a, h
     ld [channel_period3+1], a
-.toneporta:
+    .toneporta:
 
-    ld hl, wave_instruments
-    ld a, [hl+]
-    ld h, [hl]
-    ld l, a
-    call setup_instrument_pointer
-    ld a, [highmask3]
-    res 7, a ; turn off the "initial" flag
-    jr z, .write_mask3
+        ld hl, wave_instruments
+        ld a, [hl+]
+        ld h, [hl]
+        ld l, a
+        call setup_instrument_pointer
+        ld a, [highmask3]
+        res 7, a ; turn off the "initial" flag
+        jr z, .write_mask3
 
-    checkMute 2, .do_setvol3
+        checkMute 2, .do_setvol3
 
-    ld a, [hl+]
-    ldh [rAUD3LEN], a
-    ld a, [hl+]
-    ldh [rAUD3LEVEL], a
-    ld a, [hl+]
-    push hl
+        ld a, [hl+]
+        ldh [rAUD3LEN], a
+        ld a, [hl+]
+        ldh [rAUD3LEVEL], a
+        ld a, [hl+]
+        push hl
 
-    ; check to see if we need to copy the wave
-    ld hl, current_wave
-    cp [hl]
-    jr z, .no_wave_copy
-    call update_ch3_waveform
+        ; check to see if we need to copy the wave
+        ld hl, current_wave
+        cp [hl]
+        jr z, .no_wave_copy
+        call update_ch3_waveform
 
-.no_wave_copy:
-    pop hl
-    ld a, [hl+]
-    ld [table3], a
-    ld a, [hl+]
-    ld [table3+1], a
-    xor a
-    ld [table_row3], a
+    .no_wave_copy:
+        pop hl
+        ld a, [hl+]
+        ld [table3], a
+        ld a, [hl+]
+        ld [table3+1], a
+        xor a
+        ld [table_row3], a
 
-    ld a, [hl]
+        ld a, [hl]
 
-.write_mask3:
-    ld [highmask3], a
+    .write_mask3:
+        ld [highmask3], a
 
-.do_setvol3:
-    ld e, 2
-    call do_effect
+    .do_setvol3:
+        ld e, 2
+        call do_effect
 
-    pop af
-    call c, play_ch3_note
+        pop af
+        call c, play_ch3_note
 
-    ld a, [table3]
-    ld c, a
-    ld a, [table3+1]
-    ld b, a
-    or c
-    ld hl, table_row3
-    ld e, 2
-    call nz, do_table
+        ld a, [table3]
+        ld c, a
+        ld a, [table3+1]
+        ld b, a
+        or c
+        ld hl, table_row3
+        ld e, 2
+        call nz, do_table
 
-    ; no ch4
+        ; no ch4
 
-    ; finally just update the tick/order/row values
-    jp tick_time
+        ; finally just update the tick/order/row values
+        jp tick_time
 
 process_effects:
     ; only do effects if not on tick zero
@@ -896,68 +896,68 @@ process_effects:
     ld e, 0
     call do_effect      ; make sure we never return with ret_dont_play_note!!
 
-; tODO: Deduplicate this code by moving it into do_table?
-.after_effect1:
-    ld a, [table1]
-    ld c, a
-    ld a, [table1+1]
-    ld b, a
-    or c
-    ld hl, table_row1
-    ld e, 0
-    call nz, do_table
+    ; tODO: Deduplicate this code by moving it into do_table?
+    .after_effect1:
+        ld a, [table1]
+        ld c, a
+        ld a, [table1+1]
+        ld b, a
+        or c
+        ld hl, table_row1
+        ld e, 0
+        call nz, do_table
 
-.process_ch2:
-    checkMute 1, .after_effect2
+    .process_ch2:
+        checkMute 1, .after_effect2
 
-    ld hl, pattern2
-    ld a, [hl+]
-    ld c, a
-    ld b, [hl]
-    call get_current_row
+        ld hl, pattern2
+        ld a, [hl+]
+        ld c, a
+        ld b, [hl]
+        call get_current_row
 
-    ld a, c
-    or a
-    jr z, .after_effect2
+        ld a, c
+        or a
+        jr z, .after_effect2
 
-    ld e, 1
-    call do_effect      ; make sure we never return with ret_dont_play_note!!
+        ld e, 1
+        call do_effect      ; make sure we never return with ret_dont_play_note!!
 
-.after_effect2:
-    ld a, [table2]
-    ld c, a
-    ld a, [table2+1]
-    ld b, a
-    or c
-    ld hl, table_row2
-    ld e, 1
-    call nz, do_table
+    .after_effect2:
+        ld a, [table2]
+        ld c, a
+        ld a, [table2+1]
+        ld b, a
+        or c
+        ld hl, table_row2
+        ld e, 1
+        call nz, do_table
 
-.process_ch3:
-    checkMute 2, .after_effect3
+    .process_ch3:
+        checkMute 2, .after_effect3
 
-    ld hl, pattern3
-    ld a, [hl+]
-    ld c, a
-    ld b, [hl]
-    call get_current_row
+        ld hl, pattern3
+        ld a, [hl+]
+        ld c, a
+        ld b, [hl]
+        call get_current_row
 
-    ld a, c
-    or a
-    jr z, .after_effect3
+        ld a, c
+        or a
+        jr z, .after_effect3
 
-    ld e, 2
-    call do_effect      ; make sure we never return with ret_dont_play_note!!
+        ld e, 2
+        call do_effect      ; make sure we never return with ret_dont_play_note!!
 
-.after_effect3:
-    ld a, [table3]
-    ld c, a
-    ld a, [table3+1]
-    ld b, a
-    or c
-    ld hl, table_row3
-    ld e, 2
-    call nz, do_table
+    .after_effect3:
+        ld a, [table3]
+        ld c, a
+        ld a, [table3+1]
+        ld b, a
+        or c
+        ld hl, table_row3
+        ld e, 2
+        call nz, do_table
 
     ; no ch4
 
@@ -998,35 +998,35 @@ tick_time:
 
     jr .update_current_order
 
-.no_break:
-    ; increment row.
-    ld a, [row]
-    inc a
-    cp PATTERN_LENGTH
-    jr nz, .noreset
+    .no_break:
+        ; increment row.
+        ld a, [row]
+        inc a
+        cp PATTERN_LENGTH
+        jr nz, .noreset
 
     ld b, 0
-.neworder:
-    ; increment order and change loaded patterns
-    ld a, [order_cnt]
-    ld c, a
-    ld a, [current_order]
-    add 2
-    cp c
-    jr nz, .update_current_order
-    xor a
-.update_current_order:
-    ; call with:
-    ; a: The order to load
-    ; b: The row for the order to start on
-    ld [current_order], a
-    ld c, a
-    call load_patterns
+    .neworder:
+        ; increment order and change loaded patterns
+        ld a, [order_cnt]
+        ld c, a
+        ld a, [current_order]
+        add 2
+        cp c
+        jr nz, .update_current_order
+        xor a
+    .update_current_order:
+        ; call with:
+        ; a: The order to load
+        ; b: The row for the order to start on
+        ld [current_order], a
+        ld c, a
+        call load_patterns
 
     ld a, b
-.noreset:
-    ld [row], a
-    ret
+    .noreset:
+        ld [row], a
+        ret
 
 note_table:
 include "huge-driver/hUGE_note_table.inc"
