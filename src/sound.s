@@ -1,3 +1,22 @@
+snd_Update:
+	call hUGE_dosound
+	if_nz_h snd_noise_busy_ctr
+		dec a
+		ldh [snd_noise_busy_ctr], a
+	:
+	ldh a, [snd_next_count]
+	and a
+	ret z
+	; decrement count to next sound
+	dec a
+	ldh [snd_next_count], a
+	ret nz
+	; play next sound
+	ld16_h h, l, snd_next_addr
+	ld a, [snd_noise_busy_ctr]
+	; jp snd_Play ; call
+	; ret
+
 ; params:
 	; hl - address of sound data to play
 	; a - frames for noise channel should be busy for
@@ -33,24 +52,6 @@ snd_Play:
 	ldh [snd_next_count], a
 	st16_h snd_next_addr, h, l
 	ret
-
-snd_Update:
-	if_nz_h snd_noise_busy_ctr
-		dec a
-		ldh [snd_noise_busy_ctr], a
-	:
-	ldh a, [snd_next_count]
-	and a
-	ret z
-	; decrement count to next sound
-	dec a
-	ldh [snd_next_count], a
-	ret nz
-	; play next sound
-	ld16_h h, l, snd_next_addr
-	ld a, [snd_noise_busy_ctr]
-	jr snd_Play ; call
-	; ret
 
 snd_footstep1:
        ;first reg  ;cutoff     ;volume/env  ;freq        ;trig/cut    ;vibrato xor ;frames til next

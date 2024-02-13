@@ -94,6 +94,10 @@ section "Header", ROM0[$100]
 	include "src/test_room.s"
 	include "src/title.s"
 
+	; hUGE tracker/driver
+	include "huge-driver/driver.s"
+	include "huge-driver/hUGE_note_table.inc"
+
 start:
 	; Shut down audio circuitry
 	xor a
@@ -152,7 +156,7 @@ start:
 	ldh [rNR50], a
 	
 	call title_Init
-	println {@}
+	; println {@}
 	ld hl, on_title
 	inc [hl]
 	ld a, LCDCF_ON | LCDCF_BGON | LCDCF_WINON | LCDCF_BLK21 | LCDCF_WIN9C00
@@ -170,6 +174,8 @@ start:
 	iobj_Clear
 	call plr_Init
 	call test_room_Init
+	ld hl, caves
+	call hUGE_init
 
 	; enable interrupts
 	ld a, IEF_VBLANK | IEF_STAT
@@ -269,7 +275,7 @@ run_dma:
 		jr nz, .wait    ; 3 cycles
     ret
 run_dma_end:
-	println {@}
+	; println {@}
 
 section "Tile data", ROM0
 
@@ -288,3 +294,6 @@ mask_tiles_end:
 shadow_tiles:
 	incbin "bin/shadows.bin.half"
 shadow_tiles_end:
+
+sng_caves:
+	include "caves.s"
