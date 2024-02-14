@@ -109,6 +109,8 @@ macro plr_Shoot
 		ldh a, [plr_y]
 		add 15
 		ld e, a
+		ldh a, [plr_elevation]
+		ld b, a
 		ldh a, [plr_x]
 		ld d, a
 		ldh a, [plr_bools]

@@ -5,9 +5,9 @@ def SHADOW_OAM	= $c100
 ; c200.c280 = invisible/inanimate objects
 	; / 6 = 21 slots
 def IOBJ		= $c200
-; c280.c300 = bullet shells
-	; / 16 = 8 slots
-def SHELLS		= $c280
+; c2a0.c300 = bullet shells
+	; / 16 = 6 slots
+def SHELLS		= $c2a0
 
 section "hram", hram
 	rsset _HRAM+20 ; make room for DMA transfer code (run_dma) and local vars

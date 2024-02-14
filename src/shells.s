@@ -23,6 +23,7 @@
 ; params:
 	; d - x px val
 	; e - y px val
+	; b - z px val
 println {@}
 shells_Create:
 	push af
@@ -43,9 +44,16 @@ shells_Create:
 		xor a
 		ld [hl+], a
 	; z
-		ld a, high(SHELL_STARTING_Z)
+		push hl
+		ld c, 0
+		ld hl, SHELL_STARTING_Z
+		add hl, bc
+		ld b, h
+		ld c, l
+		pop hl
+		ld a, b
 		ld [hl+], a
-		ld a, low(SHELL_STARTING_Z)
+		ld a, c
 		ld [hl+], a
 	; xspeed
 		call comm_Rand
@@ -66,6 +74,7 @@ shells_Create:
 		xor a
 		ld [hl+], a
 		call comm_Rand
+		and %0111_1111
 		ld [hl+], a
 	; zspeed
 		ld a, high(SHELL_STARTING_ZSPEED)
