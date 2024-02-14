@@ -14,65 +14,67 @@ section "hram", hram
 	def LOCAL = _HRAM+10 ; 10 bytes for methods' local vars
 
 	; misc
-	def on_title rb 1
-	def lcdc rb 1
-	def oam_free_addr rb 2
-	def white_flash_ctr rb 1
-	def frame_ctr rb 1
-	def sp_buff rw 1
+	def on_title rb
+	def lcdc rb
+	def seed rw
+	def oam_free_addr rw
+	def white_flash_ctr rb
+	def frame_ctr rb
+	def sp_buff rw
 
-	def mask_vram_addr rb 2
-	def mask_vram_buff_addr rb 2
+	def mask_vram_addr rw
+	def mask_vram_buff_addr rw
 	
 	; input
-	def buttons_down rb 1 ; DULRSsBA
-	def buttons_pressed rb 1
-	def buttons_released rb 1
+	def buttons_down rb ; DULRSsBA
+	def buttons_pressed rb
+	def buttons_released rb
 
 	; screen
-	def scroll_x rb 2
-	def scroll_y rb 2
+	def scroll_x rw
+	def scroll_y rw
 
 	; text box
-	def txt_bools rb 1 ; defined in text.s
-	def txt_src_addr rb 2 ; address to next char to be displayed
-	def txt_vram_addr rb 2 ; address to tile position on screen to write to
-	def txtbox_y rb 1 ; this is effectively rWY
-	def txt_ctr rb 1 ; multipurpose; action depends on bools
-	def txt_char_tile rb 1 ; tile index of the char to write to VRAM during vblank
+	def txt_bools rb ; defined in text.s
+	def txt_src_addr rw ; address to next char to be displayed
+	def txt_vram_addr rw ; address to tile position on screen to write to
+	def txtbox_y rb ; this is effectively rWY
+	def txt_ctr rb ; multipurpose; action depends on bools
+	def txt_char_tile rb ; tile index of the char to write to VRAM during vblank
 
 	; player
-	def plr_bools rb 1 ; 00f0_000g | facing ←, on ground
-	def plr_x rb 2 ; byte 2 = fraction
-	def plr_y rb 2 ; byte 2 = fraction
-	def plr_state rb 1
-	def plr_state_prev rb 1
-	def plr_frame rb 2 ; byte 2 = fraction
-	def plr_speed rb 1
-	def plr_shoot_anim_ctr rb 1
-	def plr_shoot_stop_ctr rb 1
-	def plr_shoot_release_ctr rb 1
-	def plr_elevation rb 2 ; byte 2 = fraction
-	def plr_vspeed rb 2 ; byte 2 = fraction
-	def plr_crouch_to_jump_ctr rb 1
-	def plr_crouch_from_jump_ctr rb 1
+	def plr_bools rb ; 00f0_000g | facing ←, on ground
+	def plr_x rw ; byte 2 = fraction
+	def plr_y rw ; byte 2 = fraction
+	def plr_state rb
+	def plr_state_prev rb
+	def plr_frame rw ; byte 2 = fraction
+	def plr_speed rb
+	def plr_shoot_anim_ctr rb
+	def plr_shoot_stop_ctr rb
+	def plr_shoot_release_ctr rb
+	def plr_elevation rw ; byte 2 = fraction
+	def plr_vspeed rw ; byte 2 = fraction
+	def plr_crouch_to_jump_ctr rb
+	def plr_crouch_from_jump_ctr rb
 
 	; effects
-	def shell_x rw 1 ; byte 2 = fraction
-	def shell_y rw 1 ; byte 2 = fraction
-	def shell_z rw 1 ; byte 2 = fraction
-	def shell_xspeed rw 1 ; byte 2 = fraction
-	def shell_yspeed rw 1 ; byte 2 = fraction
-	def shell_zspeed rw 1 ; byte 2 = fraction
-	def shell_next_addr rb 1 ; low
-	def dust_x rb 1
-	def dust_y rb 1
-	def dust_frame rb 1 ; aaaaffff | actual frame, fraction
+	def shell_state rb
+	def shell_x rw ; byte 2 = fraction
+	def shell_y rw ; byte 2 = fraction
+	def shell_z rw ; byte 2 = fraction
+	def shell_xspeed rw ; byte 2 = fraction
+	def shell_yspeed rw ; byte 2 = fraction
+	def shell_zspeed rw ; byte 2 = fraction
+	def shells_next_addr rb ; low
+	def dust_x rb
+	def dust_y rb
+	def dust_frame rb ; aaaaffff | actual frame, fraction
 
 	; sound
-	def snd_next_addr rw 1
-	def snd_next_count rb 1
-	def snd_noise_busy_ctr rb 1
+	def snd_next_addr rw
+	def snd_next_count rb
+	def snd_noise_busy_ctr rb
 
 	; print how much hram space is left
 	def remaining_hram equ $ffff - _RS
@@ -145,6 +147,7 @@ start:
 	memcpy tiles, $8000, tiles_end - tiles
 	memset8 $a0a0, $9c00, 1024
 	memset8 0, SHADOW_OAM, OAM_COUNT * sizeof_OAM_ATTRS
+	memset8 0, SHELLS, $80
 
 	; set palettes to all white
 	xor a
@@ -187,6 +190,8 @@ start:
 	call test_room_Init
 	ld hl, caves
 	call hUGE_init
+	ld a, low(SHELLS)
+	ldh [shells_next_addr], a
 
 	; enable interrupts
 	ld a, IEF_VBLANK | IEF_STAT
@@ -203,6 +208,13 @@ start:
 forever:
 	ld hl, frame_ctr
 	inc [hl]
+	; inc seed
+		ldh a, [seed+1]
+		add 1
+		ldh [seed+1], a
+		ldh a, [seed]
+		adc 0
+		ldh [seed], a
 
 	; turn objs back on
 	ldh a, [lcdc]
@@ -230,7 +242,7 @@ forever:
 	
 	; wait for vblank interrupt
 	vbl
-	jr forever
+	jp forever
 
 vblank:
 	di

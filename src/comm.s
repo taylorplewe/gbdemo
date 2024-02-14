@@ -27,3 +27,22 @@ comm_WaitForVblank:
 	halt
 	jr c, comm_WaitForVblank
 	ret
+
+; rand
+comm_Rand:
+	; Galois linear feedback shift register
+	; https://wiki.nesdev.org/w/index.php?title=Random_number_generator
+	ld16_h d, e, seed
+	ld b, 8
+	.loop:
+		sla e
+		rl d
+		jr nc, :+
+			ld a, e
+			xor $39
+			ld e, a
+		:
+		djnz .loop
+	st16_h seed, d, e
+	ld a, e
+	ret

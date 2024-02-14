@@ -39,6 +39,28 @@ macro st16_h
 	endc
 endm
 
+macro add_h16_h16
+	ldh a, [\2+1]
+	ld b, a
+	ldh a, [\1+1]
+	add b
+	ldh [\1+1], a
+	ldh a, [\2]
+	ld b, a
+	ldh a, [\1]
+	adc b
+	ldh [\1], a
+endm
+
+macro add_h16_d16
+	ldh a, [\1+1]
+	add low(\2)
+	ldh [\1+1], a
+	ldh a, [\1]
+	adc high(\2)
+	ldh [\1], a
+endm
+
 macro hl_goto_hl
 	ld a, [hl+]
 	ld h, [hl]

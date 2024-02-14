@@ -105,6 +105,27 @@ macro plr_Shoot
 		ld hl, snd_shoot
 		call snd_Play
 		call comm_WhiteFlash
+		; shell effect
+		ldh a, [plr_y]
+		add 15
+		ld e, a
+		ldh a, [plr_x]
+		ld d, a
+		ldh a, [plr_bools]
+		bit 5, a ; facing l (i know this is horrible but it's giving me a hard time)
+		jr z, .shell_r
+			ld a, d
+			add 9
+			scf
+			jr .shell_create
+		.shell_r:
+			ld a, d
+			add 3
+			scf
+			ccf
+		.shell_create:
+		ld d, a
+		call shells_Create
 	:
 endm
 
