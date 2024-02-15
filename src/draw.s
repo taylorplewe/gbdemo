@@ -290,7 +290,6 @@ draw_Dust:
 		cp NUM_DUST_FRAMES
 		ret nz
 		remove_dust
-
 	ret
 
 	def BG_PAL		= %11_10_01_00

@@ -81,14 +81,19 @@ section "hram", hram
 	def remaining_hram equ $ffff - _RS
 	println "  remaining hram: {u:remaining_hram}"
 
-section "wram", WRAM0
-	rsset $c200
-
 section "int_vblank", ROM0[INT_HANDLER_VBLANK]
 	jp vblank
 
 section "int_stat", ROM0[INT_HANDLER_STAT]
 	jp stat
+
+	def vbl equs "rst 8"
+section "wait_for_vblank", rom0[8]
+	:
+		scf
+		halt
+		jr c, :-
+	ret
 
 section "Header", ROM0[$100]
 	jp start

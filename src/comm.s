@@ -1,5 +1,3 @@
-def vbl equs "call comm_WaitForVblank"
-
 comm_WhiteFlash:
 	call snd_Update
 	vbl
@@ -20,13 +18,6 @@ comm_WhiteFlash:
 	call snd_Update
 	; jp comm_WaitForVblank
 	; ret
-
-; vbl
-comm_WaitForVblank:
-	scf
-	halt
-	jr c, comm_WaitForVblank
-	ret
 
 ; rand
 comm_Rand:
