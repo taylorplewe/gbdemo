@@ -95,11 +95,36 @@ shells_Create:
 macro shell_Update
 	; add xspeed to x
 		ld16_h h, l, shell_x
+		ld d, h
+		ldh a, [shell_y]
+		ld e, a
 		ld16_h b, c, shell_xspeed
 		add hl, bc
-		st16_h shell_x, h, l
+			; this spot taken fella?
+			; h = new x
+			; e = y
+			ld c, h
+			push de
+			call comm_CheckWall
+			pop de
+		jr nz, :+
+			st16_h shell_x, h, l
+			jr :++
+		:
+			; invert x speed
+			ldh a, [shell_xspeed]
+			cpl
+			ld h, a
+			ldh a, [shell_xspeed+1]
+			cpl
+			ld l, a
+			inc hl
+			st16_h shell_xspeed, h, l
+		:
 	; add yspeed to y
-		ld16_h h, l, shell_y
+		ldh a, [shell_y+1]
+		ld l, a
+		ld h, e
 		ld16_h b, c, shell_yspeed
 		add hl, bc
 		st16_h shell_y, h, l
