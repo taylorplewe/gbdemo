@@ -264,7 +264,7 @@ plr_Move:
 				ld a, h
 				add 8
 				ld e, a
-				call .check_wall
+				call comm_CheckWall
 			jr nz, :+
 			; TR
 				ldh a, [plr_x]
@@ -273,7 +273,7 @@ plr_Move:
 				ld a, h
 				add 8
 				ld e, a
-				call .check_wall
+				call comm_CheckWall
 			jr nz, :+
 				st16_h plr_y, h, l
 			:
@@ -294,7 +294,7 @@ plr_Move:
 				ld a, h
 				add 15
 				ld e, a
-				call .check_wall
+				call comm_CheckWall
 			jr nz, :+
 			; BR
 				ldh a, [plr_x]
@@ -303,7 +303,7 @@ plr_Move:
 				ld a, h
 				add 15
 				ld e, a
-				call .check_wall
+				call comm_CheckWall
 			jr nz, :+
 				ld a, h
 				ldh [plr_y], a
@@ -325,7 +325,7 @@ plr_Move:
 				ld a, h
 				add PLR_LEFT_LEEWAY
 				ld c, a
-				call .check_wall
+				call comm_CheckWall
 			jr nz, :+
 			; BL
 				ldh a, [plr_y]
@@ -334,7 +334,7 @@ plr_Move:
 				ld a, h
 				add PLR_LEFT_LEEWAY
 				ld c, a
-				call .check_wall
+				call comm_CheckWall
 			ret nz
 				st16_h plr_x, h, l
 				ret
@@ -354,7 +354,7 @@ plr_Move:
 				ld a, h
 				add 15 - PLR_RIGHT_LEEWAY
 				ld c, a
-				call .check_wall
+				call comm_CheckWall
 			ret nz
 			; BR
 				ldh a, [plr_y]
@@ -363,7 +363,7 @@ plr_Move:
 				ld a, h
 				add 15 - PLR_RIGHT_LEEWAY
 				ld c, a
-				call .check_wall
+				call comm_CheckWall
 			ret nz
 				st16_h plr_x, h, l
 	; params:
@@ -402,47 +402,6 @@ plr_Move:
 			add hl, de
 			; h = target collision check line, -- or |
 				; (where plr_x or plr_y would be set to)
-		ret
-	; params:
-		; c - X px position
-		; e - Y px position
-	; returns:
-		; Z - 0 if free, 1 if not
-	.check_wall:
-		push hl
-		ld hl, test_room_walls
-		; Y
-			srl e
-			srl e
-			srl e
-			srl e
-			sla e ; /16 pixels, x2 wall bytes per row
-			ld d, 0
-			add hl, de
-		; X
-			ld a, c
-			push af ; for bit shifting in a min
-			rlc a
-			and 1 ; isolate bit 7 in bit 0 position
-			ld b, 0
-			ld c, a
-			add hl, bc
-		; get that byte!
-			ld d, [hl]
-		; go to bit
-			pop af
-			swap a
-			and %0000_0111
-			jr z, .bit_loop_end
-			.bit_loop:
-				sla d
-				dec a
-				jr nz, .bit_loop
-			.bit_loop_end:
-			; and now is it a 1 or 0?
-			ld a, d
-			and $80
-		pop hl
 		ret
 
 def SHOOT_CTR_AMT = 64
