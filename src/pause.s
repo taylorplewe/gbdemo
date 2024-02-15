@@ -48,6 +48,9 @@ Unpause:
 	ldh [paused], a
 	ld a, AUDENA_ON
 	ldh [rNR52], a
+	ld a, $ff
+	ldh [rNR51], a
+	ldh [rNR50], a
 	jp draw_FadeWhiteToPal
 	; ret
 
