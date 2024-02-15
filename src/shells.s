@@ -24,7 +24,6 @@
 	; d - x px val
 	; e - y px val
 	; b - z px val
-println {@}
 shells_Create:
 	push af
 	ldh a, [shells_next_addr]

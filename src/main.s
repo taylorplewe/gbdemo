@@ -15,6 +15,7 @@ section "hram", hram
 
 	; misc
 	def on_title rb
+	def paused rb
 	def lcdc rb
 	def seed rw
 	def oam_free_addr rw
@@ -98,7 +99,7 @@ section "Header", ROM0[$100]
 	include "src/comm.s"
 	include "src/input.s"
 	include "src/text.s"
-	include "src/sound.s"
+	include "src/sfx.s"
 	include "src/screen.s"
 	include "src/draw.s"
 	include "src/plr.s"
@@ -106,6 +107,7 @@ section "Header", ROM0[$100]
 	include "src/shells.s"
 	include "src/test_room.s"
 	include "src/title.s"
+	include "src/pause.s"
 
 	; hUGE driver
 	include "src/music/hUGE_driver.s"
@@ -177,7 +179,7 @@ start:
 	ldh [rLCDC], a
 	ei
 	vbl
-	call draw_FadeToPal
+	call draw_FadeWhiteToPal
 	call title_Update
 
 	vbl
@@ -203,7 +205,7 @@ start:
 	ldh [lcdc], a
 	
 	ei
-	call draw_FadeToPal
+	call draw_FadeWhiteToPal
 
 forever:
 	ld hl, frame_ctr
@@ -215,6 +217,22 @@ forever:
 		ldh a, [seed]
 		adc 0
 		ldh [seed], a
+
+	call GetInput
+
+	if_nz_h paused, .no_pause
+		ldh a, [buttons_pressed]
+		and a
+		jr z, :+
+			call Unpause
+		:
+		jr .wai
+	.no_pause:
+
+	if_btn pressed, st
+		call Pause
+		jr .wai
+	:
 
 	; turn objs back on
 	ldh a, [lcdc]
@@ -228,8 +246,6 @@ forever:
 	memset8 0, MASK_VRAM_BUFF, 256
 	memset8 0, SHADOW_OAM, OAM_COUNT * sizeof_OAM_ATTRS
 
-	call GetInput
-
 	call scr_UpdateScroll
 	call iobj_UpdateAll
 	call shells_UpdateAll
@@ -241,6 +257,7 @@ forever:
 	call draw_Dust
 	
 	; wait for vblank interrupt
+	.wai:
 	vbl
 	jp forever
 
@@ -249,6 +266,9 @@ vblank:
 	push_all
 
 	ldh a, [on_title]
+	and a
+	jr nz, .end
+	ldh a, [paused]
 	and a
 	jr nz, .end
 

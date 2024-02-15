@@ -323,7 +323,7 @@ draw_FadeToWhite:
 		jr .loop
 	ret
 
-draw_FadeToPal:
+draw_FadeWhiteToPal:
 	ld hl, draw_pals_to_white_end - 4
 	ld b, 3
 	.loop:
