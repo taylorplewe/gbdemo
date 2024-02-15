@@ -19,15 +19,15 @@ snd_Update:
 
 ; params:
 	; hl - address of sound data to play
-	; a - frames for noise channel should be busy for
+	; a - # frames noise channel should be busy for
 snd_Play:
 	ld b, a
 	ldh a, [snd_noise_busy_ctr]
 	cp b
 	jr z, :+
-	ret nc
-	ld a, b
-	ldh [snd_noise_busy_ctr], a
+		ret nc
+		ld a, b
+		ldh [snd_noise_busy_ctr], a
 	:
 
 	; initial channel reg
