@@ -87,8 +87,8 @@ section "int_vblank", ROM0[INT_HANDLER_VBLANK]
 section "int_stat", ROM0[INT_HANDLER_STAT]
 	jp stat
 
-	def vbl equs "rst 8"
-section "wait_for_vblank", rom0[8]
+	def vbl equs "rst 0"
+section "wait_for_vblank", rom0[0]
 	:
 		scf
 		halt
@@ -282,6 +282,26 @@ vblank:
 
 	; text
 	call txt_DrawTxtbox
+	
+	; vram buffer
+		; ld hl, sp+0
+		; ld c, l
+		; ld hl, $8400 + 16
+		; ld sp, hl
+		
+		; ld hl, MASK_VRAM_BUFF
+		; ld e, 0
+		; .vram_buff:
+		; 	rept 8
+		; 	ld a, [hl+]
+		; 	ld d, a
+		; 	push de
+		; 	endr
+		; 	add sp, 48
+		; 	djnz .vram_buff
+		; ld l, c
+		; ld h, STACK_PAGE
+		; ld sp, hl
 
 	; vram buffer
 		ld hl, MASK_VRAM_BUFF

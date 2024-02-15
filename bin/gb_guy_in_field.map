@@ -5,10 +5,9 @@ SUMMARY:
 	HRAM: 0 bytes used / 127 free
 
 ROM0 bank #0:
-	EMPTY: $0000-$0007 ($0008 bytes)
-	SECTION: $0008-$000c ($0005 bytes) ["wait_for_vblank"]
-	         $0008 = !0
-	EMPTY: $000d-$003f ($0033 bytes)
+	SECTION: $0000-$0004 ($0005 bytes) ["wait_for_vblank"]
+	         $0000 = !0
+	EMPTY: $0005-$003f ($003b bytes)
 	SECTION: $0040-$0042 ($0003 bytes) ["int_vblank"]
 	EMPTY: $0043-$0047 ($0005 bytes)
 	SECTION: $0048-$004a ($0003 bytes) ["int_stat"]
