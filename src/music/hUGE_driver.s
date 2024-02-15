@@ -1,4 +1,4 @@
-include "huge-driver/hUGE.inc"
+include "src/music/hUGE.inc"
 
 macro add_a_to_r16
     add low(\1)
@@ -1029,4 +1029,4 @@ tick_time:
         ret
 
 note_table:
-include "huge-driver/hUGE_note_table.inc"
+include "src/music/hUGE_note_table.inc"

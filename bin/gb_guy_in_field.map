@@ -1,6 +1,6 @@
 SUMMARY:
 	ROM0: 14343 bytes used / 2041 free
-	ROMX: 3796 bytes used / 12588 free in 1 bank
+	ROMX: 5844 bytes used / 10540 free in 1 bank
 	WRAM0: 98 bytes used / 3998 free
 	HRAM: 0 bytes used / 127 free
 
@@ -365,8 +365,10 @@ ROMX bank #1:
 	         $4ec4 = caves.routines
 	         $4ec4 = caves.waves
 	         $4ec4 = caves.wave0
-	EMPTY: $4ed4-$7fff ($312c bytes)
-	TOTAL EMPTY: $312c bytes
+	SECTION: $4ed4-$56d3 ($0800 bytes) ["bartholomew"]
+	         $4ed4 = bartholemew
+	EMPTY: $56d4-$7fff ($292c bytes)
+	TOTAL EMPTY: $292c bytes
 
 WRAM0 bank #0:
 	SECTION: $c000 (0 bytes) ["wram"]

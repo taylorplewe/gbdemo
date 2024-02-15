@@ -107,9 +107,9 @@ section "Header", ROM0[$100]
 	include "src/test_room.s"
 	include "src/title.s"
 
-	; hUGE tracker/driver
-	include "huge-driver/driver.s"
-	include "huge-driver/hUGE_note_table.inc"
+	; hUGE driver
+	include "src/music/hUGE_driver.s"
+	include "src/music/hUGE_note_table.inc"
 
 start:
 	; Shut down audio circuitry
@@ -320,4 +320,8 @@ shadow_tiles:
 shadow_tiles_end:
 
 sng_caves:
-	include "caves.s"
+	include "src/music/caves.s"
+
+section "bartholomew", romx
+bartholomew:
+	incbin "bin/bartholomew.chr"
