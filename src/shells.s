@@ -57,6 +57,7 @@ shells_Create:
 	; xspeed
 		call comm_Rand
 		ld b, a
+		; shoot l or r dep. on which way plr is facing
 		pop af
 		jr c, :+
 			; r
@@ -120,7 +121,7 @@ macro shell_Update
 		xor a
 		ldh [shell_z], a
 		ldh [shell_z+1], a
-		; is zspeed >= 3?
+		; is zspeed >= SHELL_BOUNCEABLE_ZSPEED?
 			ldh a, [shell_zspeed]
 			cp SHELL_BOUNCEABLE_ZSPEED
 			jr c, .stop\@
@@ -128,12 +129,12 @@ macro shell_Update
 				; zspeed = -SHELL_BOUNCE_UP_SPD
 				ld hl, SHELL_BOUNCE_UP_ZSPEED
 				st16_h shell_zspeed, h, l
-				; xspeed /= 2 |
+				; xspeed /= 2
 				ld16_h h, l, shell_xspeed
 				sra h
 				rr l
 				st16_h shell_xspeed, h, l
-				; yspeed /= 2 |- idk about these two
+				; yspeed /= 2
 				ld16_h h, l, shell_yspeed
 				sra h
 				rr l
@@ -158,14 +159,14 @@ macro shell_Draw
 		ldh a, [shell_y]
 		sub b
 		add c
-		add 16
+		add OAM_Y_OFS
 		ld [hl+], a
 	; x
 		ldh a, [scroll_x]
 		ld b, a
 		ldh a, [shell_x]
 		sub b
-		add 8
+		add OAM_X_OFS
 		ld [hl+], a
 	; tile
 		ld a, SHELL_TILE
@@ -218,7 +219,4 @@ shells_UpdateAll:
 			ret z
 			ld l, a
 			jp .loop
-	ret
-
-shells_Draw:
 	ret

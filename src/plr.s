@@ -412,10 +412,7 @@ def PLR_TERM_VELO	= $0400
 def GRAVITY			= $0040
 plr_Jump:
 	; set vspeed to PLR_JUMP_VSPEED
-		ld a, high(PLR_JUMP_VSPEED)
-		ldh [plr_vspeed], a
-		ld a, low(PLR_JUMP_VSPEED)
-		ldh [plr_vspeed+1], a
+		st16_h plr_vspeed, PLR_JUMP_VSPEED
 	; update bool and state
 		plr_clear_ground
 		ld a, PLR_STATE_JUMP
@@ -486,7 +483,7 @@ plr_Draw:
 			ld a, [hl+]
 			ld d, a
 			ldh a, [plr_y]
-			add 16
+			add OAM_Y_OFS
 			add d
 			ld [bc], a
 			; scroll offset
@@ -513,7 +510,7 @@ plr_Draw:
 					ld d, a
 				:
 			ldh a, [plr_x]
-			add 8
+			add OAM_X_OFS
 			add d
 			ld [bc], a
 			; scroll offset
