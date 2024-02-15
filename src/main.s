@@ -282,26 +282,6 @@ vblank:
 
 	; text
 	call txt_DrawTxtbox
-	
-	; vram buffer
-		; ld hl, sp+0
-		; ld c, l
-		; ld hl, $8400 + 16
-		; ld sp, hl
-		
-		; ld hl, MASK_VRAM_BUFF
-		; ld e, 0
-		; .vram_buff:
-		; 	rept 8
-		; 	ld a, [hl+]
-		; 	ld d, a
-		; 	push de
-		; 	endr
-		; 	add sp, 48
-		; 	djnz .vram_buff
-		; ld l, c
-		; ld h, STACK_PAGE
-		; ld sp, hl
 
 	; vram buffer
 		ld hl, MASK_VRAM_BUFF

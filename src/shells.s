@@ -56,11 +56,15 @@ shells_Create:
 		ld [hl+], a
 	; xspeed
 		call comm_Rand
+		or %0110_0000
 		ld b, a
 		; shoot l or r dep. on which way plr is facing
 		pop af
 		jr c, :+
 			; r
+			ld a, b
+			and %1001_1111
+			ld b, a
 			ld a, $ff
 			jr :++
 		:
