@@ -19,7 +19,6 @@ section "hram", hram
 	def lcdc rb
 	def seed rw
 	def oam_free_addr rw
-	def white_flash_ctr rb
 	def frame_ctr rb
 	def sp_buff rw
 
