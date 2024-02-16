@@ -213,6 +213,7 @@ plr_Update:
 
 def PLR_RIGHT_LEEWAY = 4
 def PLR_LEFT_LEEWAY = PLR_RIGHT_LEEWAY - 3
+def PLR_UP_LEEWAY = 8
 def WALK_SPEED = $0081
 def RUN_SPEED = $0101
 def plr_shoot_release_ctr_AMT = 12
@@ -262,16 +263,16 @@ plr_Move:
 				add PLR_LEFT_LEEWAY
 				ld c, a
 				ld a, h
-				add 8
+				add PLR_UP_LEEWAY
 				ld e, a
 				call comm_CheckWall
 			jr nz, :+
 			; TR
-				ldh a, [plr_x]
-				add 15 - PLR_RIGHT_LEEWAY
+				ld a, c ; c does not get clobbered in CheckWall
+				add 15 - (PLR_RIGHT_LEEWAY + PLR_LEFT_LEEWAY)
 				ld c, a
 				ld a, h
-				add 8
+				add PLR_UP_LEEWAY
 				ld e, a
 				call comm_CheckWall
 			jr nz, :+
@@ -297,18 +298,15 @@ plr_Move:
 				call comm_CheckWall
 			jr nz, :+
 			; BR
-				ldh a, [plr_x]
-				add 15 - PLR_RIGHT_LEEWAY
+				ld a, c
+				add 15 - (PLR_RIGHT_LEEWAY + PLR_LEFT_LEEWAY)
 				ld c, a
 				ld a, h
 				add 15
 				ld e, a
 				call comm_CheckWall
 			jr nz, :+
-				ld a, h
-				ldh [plr_y], a
-				ld a, l
-				ldh [plr_y+1], a
+				st16_h plr_y, h, l
 			:
 			pop bc
 	.l:
@@ -331,9 +329,6 @@ plr_Move:
 				ldh a, [plr_y]
 				add 15
 				ld e, a
-				ld a, h
-				add PLR_LEFT_LEEWAY
-				ld c, a
 				call comm_CheckWall
 			ret nz
 				st16_h plr_x, h, l
@@ -360,9 +355,6 @@ plr_Move:
 				ldh a, [plr_y]
 				add 15
 				ld e, a
-				ld a, h
-				add 15 - PLR_RIGHT_LEEWAY
-				ld c, a
 				call comm_CheckWall
 			ret nz
 				st16_h plr_x, h, l
