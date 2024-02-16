@@ -68,15 +68,10 @@ txt_signposts:
 	dw benji, dawg
 	
 benji:
-	; db "PARK RULES >1. Stay away from\nthe trees. >2. Don't talk to\nstrangers >who come out of\nthe trees. >3. No riding\nbicycles. >Please help to\nkeep our great >Federico Faggin\nMemorial Park >safe and clean! ", 0
-	db "I'm gonna tell you\na story about a >boy named Stan._\nStan Rogers. >__You know what,_\nnevermind >I forgot the\nstory! ", 0
-	; db "I read the news\ntoday oh boy... >Something\nsomething >song by the\nBeetles ", 0
-	; db "Sorry dude,_ that's\ngonna run ya $59.>Take it or leave\nit. ", 0
-	; db "Roses are red_\nviolets are blue >What does it\ntake >To get a girl__\nlike you? ", 0
-	db "Dawg my butt hurts", 0
-	db "CONSEQUENCES "
+	; db "this is 18 letters"
+	db "Voyager 1, _o\ncosmic voyager, >embarked year of\nour Lord _1977, >journeyed\nvast... >unveiled Jupiter,\nSaturn, beyond. >Signals still\ndance, >a testament to\nits wonder >romance with the\nstars... ", 0
 dawg:
-	db "Are you serious\nbro? >DO NOT come to my\nhouse, >DO NOT talk to my\nwife, >and DEFINITELY >do not shout at my\ndog again. >THERE WILL BE\nCONSEQUENCES ", 0
+	db "Press A to jump_\nPress B to shoot >Hold B to run >(This sign cost us\n$2,000) ", 0
 
 txt_UpdateTxtboxPos:
 	; is textbox moving?

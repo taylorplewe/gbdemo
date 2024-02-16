@@ -541,9 +541,7 @@ plr_Draw:
 		pop af ; get # frames
 		cp [hl]
 		jr nz, :+
-			xor a
-			ldh [plr_frame], a
-			ld l, a
+			ld [hl], 0
 		:
 	ld a, b
 	and a
@@ -572,7 +570,7 @@ plr_AdvanceFrameAndPlaySound:
 	.run:
 	cp PLR_STATE_RUN
 	ret nz
-		ld a, l
+		ld a, [hl]
 		cp 1
 		jr nz, :+
 			; footstep1
