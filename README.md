@@ -2,15 +2,25 @@
 
 A Gameboy game your father would approve of.
 
-Written in LR35902 (more or less Z80) assembly using the [RGBDS compiler](https://rgbds.gbdev.io/)
+![tdgbd](https://github.com/taylorplewe/tdgbd/assets/69979860/57009502-603d-42fc-bffa-14dc956b1333)
+
+### Download just the game ROM: [tdgbd.gb](/bin/gb_guy_in_field.gb)
+
+Higher quality video: [https://youtu.be/AHXYl89QJTo](https://youtu.be/AHXYl89QJTo)
+
+Written in LR35902 (more or less Z80) assembly
 
 Much help from [gbdev.io](https://gbdev.io/pandocs/)
 
+[binjgb](https://binji.github.io/binjgb) is an online GB emulator
+
+> *NOTE: For best results, use an emulator like [Mesen](https://mesen.ca) or [higan](https://github.com/higan-emu/higan/releases) that prioritize emulation accuracy; emulators like binjgb or Visual Boy Advance do not calculate object priority correctly, and the player shadow will not be masked by certain background objects like it's supposed to and will look funny*
+
 ---
 credit to the authors of
-- [RGBDS compiler toolchain](https://rgbds.gbdev.io/)
+- [RGBDS](https://rgbds.gbdev.io/) GB-z80 compiler toolchain
 - hUGE [tracker](https://github.com/SuperDisk/hUGETracker) and [sound driver](https://github.com/SuperDisk/hUGEDriver)
-- [Aseprite](https://aseprite.org)
-- [yychr](https://www.romhacking.net/utilities/958/)
-- [RGBDS Z80 VSCode extension](https://marketplace.visualstudio.com/items?itemName=donaldhays.rgbds-z80)
-- [Mesen](https://mesen.ca)
+- [Aseprite](https://aseprite.org) graphics editor
+- [yychr](https://www.romhacking.net/utilities/958/) graphics editor
+- [RGBDS Z80](https://marketplace.visualstudio.com/items?itemName=donaldhays.rgbds-z80) VSCode extension
+- [Mesen](https://mesen.ca) emulator
