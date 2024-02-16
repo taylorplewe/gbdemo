@@ -477,7 +477,6 @@ plr_Draw:
 	; # tiles in this frame
 		ld a, [hl+]
 		ld e, a
-		ld a, [hl]
 	.tile_loop:
 		; Y
 			ld a, [hl+]
@@ -531,8 +530,7 @@ plr_Draw:
 			xor d
 			ld [bc], a
 			inc bc
-		dec e
-		jr nz, .tile_loop
+		djnz e, .tile_loop
 	st16_h oam_free_addr, b, c
 	call plr_DrawShadow ; hl is now conveniently pointing at the shadow data
 	; update plr_frame
@@ -542,25 +540,19 @@ plr_Draw:
 		ldh a, [plr_frame+1]
 		add l
 		ldh [plr_frame+1], a
+		ld hl, plr_frame
 		jr nc, :+
-			ldh a, [plr_frame]
-			inc a
-			ldh [plr_frame], a
+			inc [hl]
 			inc b
 		:
-		ld l, a
 	; mod plr_frame by # of frames in the anim
 		pop af ; get # frames
-		cp l
+		cp [hl]
 		jr nz, :+
-			; ret nc
-			; ret
-			; jr nc, plr_DrawJumpShadow
-		; :
 			xor a
 			ldh [plr_frame], a
 			ld l, a
-	:
+		:
 	ld a, b
 	and a
 	ret z
@@ -571,7 +563,7 @@ plr_AdvanceFrameAndPlaySound:
 	ldh a, [plr_state]
 	cp PLR_STATE_WALK
 	jr nz, .run
-		ld a, l ; frame #
+		ld a, [hl] ; frame #
 		and a
 		jr nz, :+
 			; footstep1
@@ -756,7 +748,6 @@ plr_DrawShadow:
 			; attr
 				xor a
 				ld [hl+], a
-
 			st16_h oam_free_addr, h, l
 	ret
 
