@@ -19,6 +19,7 @@ title_Init:
 
 def NUM_SHINY_LETTERS = 3
 title_Update:
+	ld b, 46
 	call .wait
 
 	; shine
@@ -61,13 +62,12 @@ title_Update:
 		:
 		djnz .shine_loop
 
+	ld b, 30
 	call .wait
 
 	jp draw_FadeToWhite
 
 	.wait:
-	ld b, 24
-	.wait_loop:
 		vbl
-		djnz .wait_loop
+		djnz .wait
 	ret

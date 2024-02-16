@@ -1,5 +1,5 @@
 SUMMARY:
-	ROM0: 14437 bytes used / 1947 free
+	ROM0: 14439 bytes used / 1945 free
 	ROMX: 6868 bytes used / 9516 free in 1 bank
 	WRAM0: 98 bytes used / 3998 free
 	HRAM: 0 bytes used / 127 free
@@ -12,7 +12,7 @@ ROM0 bank #0:
 	EMPTY: $0043-$0047 ($0005 bytes)
 	SECTION: $0048-$004a ($0003 bytes) ["int_stat"]
 	EMPTY: $004b-$00ff ($00b5 bytes)
-	SECTION: $0100-$17bd ($16be bytes) ["Header"]
+	SECTION: $0100-$17bf ($16c0 bytes) ["Header"]
 	         $0150 = _memcpy
 	         $0159 = _memset8
 	         $015a = _memset8.loop
@@ -236,105 +236,104 @@ ROM0 bank #0:
 	         $16e7 = title_Init
 	         $16ef = title_Init.draw_letters_loop
 	         $16f6 = title_Update
-	         $1703 = title_Update.shine_loop
-	         $1712 = !52
-	         $171f = !53
-	         $172c = !54
-	         $1735 = title_Update.shine_loop_next
-	         $1741 = !55
-	         $174a = title_Update.wait
-	         $174c = title_Update.wait_loop
-	         $1751 = Pause
-	         $178b = Unpause
-	SECTION: $17be-$324d ($1a90 bytes) ["Tile data"]
-	         $17be = tiles
-	         $2fbe = tiles_end
-	         $2fbe = letter_a
-	         $2fce = mask_tiles
-	         $2fce = letter_a_end
-	         $304e = shadow_tiles
-	         $304e = mask_tiles_end
-	         $324e = sng_caves
-	         $324e = shadow_tiles_end
-	SECTION: $324e-$3959 ($070c bytes) ["Sound Driver"]
-	         $324e = hUGE_init
-	         $325f = hUGE_init.copy_song_descriptor_loop
-	         $326b = hUGE_init.fill_loop
-	         $327e = load_patterns
-	         $3290 = load_patterns.load_pattern
-	         $329e = get_current_row
-	         $32a1 = get_current_row.row_in_a
-	         $32ad = get_current_note
-	         $32ba = get_note_period
-	         $32c7 = ptr_to_channel_member
-	         $32d3 = update_channel_freq
-	         $32d5 = update_channel_freq.nonzero_highmask
-	         $32df = update_channel_freq.update_channel1
-	         $32f0 = update_channel_freq.update_channel2
-	         $3301 = update_channel_freq.update_channel3
-	         $3312 = play_note_routines
-	         $3319 = play_ch1_note
-	         $332c = play_ch2_note
-	         $333f = play_ch3_note
-	         $3362 = do_table
-	         $3376 = do_table.no_steal
-	         $337c = do_table.no_jump
-	         $339a = do_table.is_ch4
-	         $33a1 = do_table.no_note
-	         $33a2 = do_table.no_note2
-	         $33a7 = do_effect
-	         $33a9 = do_effect.no_set_offset
-	         $33c1 = do_effect.no_offset
-	         $33c7 = do_effect.jump
-	         $33e7 = fx_set_pan
-	         $33ec = update_ch3_waveform
-	         $343b = fx_pos_jump
-	         $343b = hUGE_set_position
-	         $3444 = fx_pos_jump.already_broken
-	         $3447 = fx_pattern_break
-	         $344d = setup_instrument_pointer
-	         $3454 = setup_instrument_pointer.finish
-	         $345f = hUGE_dosound
-	         $3481 = hUGE_dosound.toneporta
-	         $34ae = hUGE_dosound.write_mask1
-	         $34b1 = hUGE_dosound.do_setvol1
-	         $34cb = process_ch2
-	         $34e6 = process_ch2.toneporta
-	         $3511 = process_ch2.write_mask2
-	         $3514 = process_ch2.do_setvol2
-	         $352e = process_ch3
-	         $354a = process_ch3.toneporta
-	         $3572 = process_ch3.no_wave_copy
-	         $3580 = process_ch3.write_mask3
-	         $3583 = process_ch3.do_setvol3
-	         $35a0 = process_effects
-	         $35b9 = process_effects.after_effect1
-	         $35ca = process_effects.process_ch2
-	         $35e3 = process_effects.after_effect2
-	         $35f4 = process_effects.process_ch3
-	         $360d = process_effects.after_effect3
-	         $361e = tick_time
-	         $363a = tick_time.no_break
-	         $3644 = tick_time.neworder
-	         $3651 = tick_time.update_current_order
-	         $3659 = tick_time.noreset
-	         $365d = note_table
-	         $377d = start
-	         $3791 = start.clear_hram
-	         $3852 = forever
-	         $3872 = !56
-	         $3874 = forever.no_pause
-	         $387f = !57
-	         $38dd = forever.wai
-	         $38e1 = vblank
-	         $3901 = vblank.vram_buff
-	         $3938 = vblank.end
-	         $393e = stat
-	         $3950 = run_dma
-	         $3956 = run_dma.wait
-	         $395a = run_dma_end
-	EMPTY: $395a-$3fff ($06a6 bytes)
-	TOTAL EMPTY: $079b bytes
+	         $1705 = title_Update.shine_loop
+	         $1714 = !52
+	         $1721 = !53
+	         $172e = !54
+	         $1737 = title_Update.shine_loop_next
+	         $1743 = !55
+	         $174e = title_Update.wait
+	         $1753 = Pause
+	         $178d = Unpause
+	SECTION: $17c0-$324f ($1a90 bytes) ["Tile data"]
+	         $17c0 = tiles
+	         $2fc0 = tiles_end
+	         $2fc0 = letter_a
+	         $2fd0 = mask_tiles
+	         $2fd0 = letter_a_end
+	         $3050 = shadow_tiles
+	         $3050 = mask_tiles_end
+	         $3250 = sng_caves
+	         $3250 = shadow_tiles_end
+	SECTION: $3250-$395b ($070c bytes) ["Sound Driver"]
+	         $3250 = hUGE_init
+	         $3261 = hUGE_init.copy_song_descriptor_loop
+	         $326d = hUGE_init.fill_loop
+	         $3280 = load_patterns
+	         $3292 = load_patterns.load_pattern
+	         $32a0 = get_current_row
+	         $32a3 = get_current_row.row_in_a
+	         $32af = get_current_note
+	         $32bc = get_note_period
+	         $32c9 = ptr_to_channel_member
+	         $32d5 = update_channel_freq
+	         $32d7 = update_channel_freq.nonzero_highmask
+	         $32e1 = update_channel_freq.update_channel1
+	         $32f2 = update_channel_freq.update_channel2
+	         $3303 = update_channel_freq.update_channel3
+	         $3314 = play_note_routines
+	         $331b = play_ch1_note
+	         $332e = play_ch2_note
+	         $3341 = play_ch3_note
+	         $3364 = do_table
+	         $3378 = do_table.no_steal
+	         $337e = do_table.no_jump
+	         $339c = do_table.is_ch4
+	         $33a3 = do_table.no_note
+	         $33a4 = do_table.no_note2
+	         $33a9 = do_effect
+	         $33ab = do_effect.no_set_offset
+	         $33c3 = do_effect.no_offset
+	         $33c9 = do_effect.jump
+	         $33e9 = fx_set_pan
+	         $33ee = update_ch3_waveform
+	         $343d = fx_pos_jump
+	         $343d = hUGE_set_position
+	         $3446 = fx_pos_jump.already_broken
+	         $3449 = fx_pattern_break
+	         $344f = setup_instrument_pointer
+	         $3456 = setup_instrument_pointer.finish
+	         $3461 = hUGE_dosound
+	         $3483 = hUGE_dosound.toneporta
+	         $34b0 = hUGE_dosound.write_mask1
+	         $34b3 = hUGE_dosound.do_setvol1
+	         $34cd = process_ch2
+	         $34e8 = process_ch2.toneporta
+	         $3513 = process_ch2.write_mask2
+	         $3516 = process_ch2.do_setvol2
+	         $3530 = process_ch3
+	         $354c = process_ch3.toneporta
+	         $3574 = process_ch3.no_wave_copy
+	         $3582 = process_ch3.write_mask3
+	         $3585 = process_ch3.do_setvol3
+	         $35a2 = process_effects
+	         $35bb = process_effects.after_effect1
+	         $35cc = process_effects.process_ch2
+	         $35e5 = process_effects.after_effect2
+	         $35f6 = process_effects.process_ch3
+	         $360f = process_effects.after_effect3
+	         $3620 = tick_time
+	         $363c = tick_time.no_break
+	         $3646 = tick_time.neworder
+	         $3653 = tick_time.update_current_order
+	         $365b = tick_time.noreset
+	         $365f = note_table
+	         $377f = start
+	         $3793 = start.clear_hram
+	         $3854 = forever
+	         $3874 = !56
+	         $3876 = forever.no_pause
+	         $3881 = !57
+	         $38df = forever.wai
+	         $38e3 = vblank
+	         $3903 = vblank.vram_buff
+	         $393a = vblank.end
+	         $3940 = stat
+	         $3952 = run_dma
+	         $3958 = run_dma.wait
+	         $395c = run_dma_end
+	EMPTY: $395c-$3fff ($06a4 bytes)
+	TOTAL EMPTY: $0799 bytes
 
 ROMX bank #1:
 	SECTION: $4000-$4ed3 ($0ed4 bytes) ["caves Song Data"]
