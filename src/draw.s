@@ -10,11 +10,6 @@
 ;        and buffer the new tile data you made to be written to VRAM during vblank
 ; - then draw the original object
 
- 
-
- 
-; hram:
-;     - def mask_ind ; index into mask VRAM buffer array
   
 ; c200.c2df: VRAM buffer
 ; c2e0.c2ff: temp mask tile buffer for calculation
@@ -69,9 +64,9 @@ draw_Mask:
 	; e - x px val
 draw_Mask_vram:
 	rsset LOCAL+5; plr_Draw, plr_DrawShadow
-	def draw_Mask_vram_map_addr rb 2
-	def draw_Mask_vram_shift_left_amt rb 1
-	def draw_Mask_vram_shift_up_amt rb 1
+	def draw_Mask_vram_map_addr rw
+	def draw_Mask_vram_shift_left_amt rb
+	def draw_Mask_vram_shift_up_amt rb
 
 	; save these first
 	ld a, e
