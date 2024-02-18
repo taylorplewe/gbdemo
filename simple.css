@@ -64,6 +64,7 @@ body {
 
 p {
   font-style: italic;
+  font-weight: 600;
   color: #09475d;
   margin-top: 16px;
   margin-left: 16px;
