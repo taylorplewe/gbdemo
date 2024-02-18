@@ -19,7 +19,11 @@ body {
   overflow: hidden;
 }
 
+#colSelectorAnchor {
+  position: relative;
+}
 #colSelector {
+  position: absolute;
   cursor: pointer;
   display: flex;
   gap: 0;
