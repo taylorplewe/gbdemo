@@ -74,6 +74,10 @@ const aEl = $('#controller_a');
 
 const binjgbPromise = Binjgb();
 
+const changePal = palIdx => {
+  emulator.setBuiltinPalette(palIdx);
+};
+
 // Extract stuff from the vue.js implementation in demo.js.
 class VM {
   constructor() {

@@ -5,8 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="simple.css">
   <title>Taylor's Dope Gameboy Demo</title>
-  <script src="binjgb.js"></script>
-  <script src="simple.js"></script>
 </head>
 <body>
   <div id="controlsLegend">
@@ -18,10 +16,10 @@
       <canvas id="mainCanvas" width="160" height="144">No Canvas Support</canvas>
     </div>
     <div id="colSelector">
-      <div class="colSelectorButton" onclick="setBuiltinPalette(0)">
+      <div class="colSelectorButton" onclick="changePal(0)">
         <div class="colorInner" id="colGray"></div>
       </div>
-      <div class="colSelectorButton" onclick="setBuiltinPalette(75)">
+      <div class="colSelectorButton" onclick="changePal(75)">
         <div class="colorInner" id="colGreen"></div>
       </div>
     </div>
@@ -43,4 +41,6 @@
     <div id="controller_b" class="roundBtn">B</div>
     <div id="controller_a" class="roundBtn">A</div>
   </div>
+  <script src="binjgb.js"></script>
+  <script src="simple.js"></script>
 </body>
