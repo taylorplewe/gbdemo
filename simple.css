@@ -48,10 +48,13 @@ body {
 }
 
 #colGray {
-  background: #aaa;
+  background-color: #aaa;
 }
 #colGreen {
   background-color: #8b956d;
+}
+#colAutumn {
+  background-color: #dca456;
 }
 
 p {
