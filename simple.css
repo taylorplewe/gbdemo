@@ -20,14 +20,27 @@ body {
 }
 
 #colSelector {
-  border: 1px solid #0d6a8c;
   cursor: pointer;
   display: flex;
   gap: 0;
 }
-#colSelectorButton {
+.colorInner {
+  width: 22px;
+  height: 22px;
+}
+.colSelectorButton {
   background-color: transparent;
-  padding: 8px;
+  padding: 12px;
+  border-top: 1px solid #0d6a8c;
+  border-bottom: 1px solid #0d6a8c;
+  border-left: 1px solid #0d6a8c;
+}
+.colSelectorButton:first-of-type {
+  border-radius: 12px 0 0 12px;
+}
+.colSelectorButton:last-of-type {
+  border-radius: 0 12px 12px 0;
+  border-right: 1px solid #0d6a8c;
 }
 
 #colGray {
