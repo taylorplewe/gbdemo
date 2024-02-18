@@ -4,15 +4,15 @@ A Gameboy game your father would approve of.
 
 ![tdgbd](https://github.com/taylorplewe/tdgbd/assets/69979860/57009502-603d-42fc-bffa-14dc956b1333)
 
-### Download just the game ROM: [tdgbd.gb](/bin/gb_guy_in_field.gb)
+### Download just the game ROM: [tdgbd.gb](/bin/tdgbd.gb)
+
+### [Play it in the browser](https://taylorplewe.github.io/tdgbd/) with the binjgb emulator (PLEASE READ NOTE BELOW)
 
 Higher quality video: [https://youtu.be/AHXYl89QJTo](https://youtu.be/AHXYl89QJTo)
 
 Written in LR35902 (more or less Z80) assembly
 
 Much help from [gbdev.io](https://gbdev.io/pandocs/)
-
-[binjgb](https://binji.github.io/binjgb) is an online GB emulator
 
 > *NOTE: For best results, use an emulator like [Mesen](https://mesen.ca) or [higan](https://github.com/higan-emu/higan/releases) that prioritize emulation accuracy; emulators like binjgb or Visual Boy Advance do not calculate object priority correctly, and the player shadow will not be masked by certain background objects like it's supposed to and will look funny*
 
