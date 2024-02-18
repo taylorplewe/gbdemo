@@ -10,7 +10,7 @@
 "use strict";
 
 // User configurable.
-const ROM_FILENAME = '../bin/gb_guy_in_field.gb';
+const ROM_FILENAME = 'bin/gb_guy_in_field.gb';
 const ENABLE_FAST_FORWARD = true;
 const ENABLE_REWIND = true;
 const ENABLE_PAUSE = false;
