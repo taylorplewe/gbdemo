@@ -8,8 +8,8 @@
 </head>
 <body>
   <div id="controlsLegend">
-    <legend>↑<br>←<br>↓<br>→<br>A<br>B<br>Start<br>Select</legend>
-    <legend>W<br>A<br>S<br>D<br>X<br>Z<br>Enter<br>Tab</legend>
+    <legend id="controlsLegendLeft">↑<br>←<br>↓<br>→<br>A<br>B<br>Start<br>Select</legend>
+    <legend id="controlsLegendRight">W<br>A<br>S<br>D<br>X<br>Z<br>Enter<br>Tab</legend>
   </div>
   <div id="gameContainer">
     <div id="game">
@@ -18,6 +18,7 @@
     <p>by Taylor Plewe</p>
     <p>view the <a href="https://github.com/taylorplewe/tdgbd">source code</a></p>
     <p>using the <a href="https://github.com/binji/binjgb">binjgb</a> WebAssembly Gameboy emulator</p>
+    <p>NOTE: For best results, use an emulator like Mesen or higan that prioritize emulation accuracy; emulators like binjgb or Visual Boy Advance do not calculate object priority correctly, and the player shadow will not be masked by certain background objects like it's supposed to and will look funny</p>
   </div>
   <div id="controller">
     <div id="controller_dpad">

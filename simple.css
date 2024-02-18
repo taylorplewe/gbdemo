@@ -22,7 +22,9 @@ body {
 p {
   font-style: italic;
   color: #09475d;
-  margin: 16px;
+  margin-top: 16px;
+  margin-left: 16px;
+  margin-right: 16px;
 }
 
 a {
@@ -277,20 +279,22 @@ a {
     height: 100vh;
     align-items: center;
     display: flex;
-    gap: 8px;
+    gap: 16px;
   }
   legend {
     color: #09475d;
+    font-size: 20pt;
   }
-  #controlsLegend:first-child {
+  #controlsLegendLeft {
     text-align: right;
   }
-  #controlsLegend:last-child {
+  #controlsLegendRight {
     font-weight: bold;
   }
   p {
     margin-left: 0;
     margin-right: 0;
+    max-width: 620px;
   }
   #controller {
     bottom: 50%;
