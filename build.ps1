@@ -1,4 +1,4 @@
-set-variable program_name "gb_guy_in_field"
+set-variable program_name "tdgbd"
 
 rgbasm src/main.s -o bin/main.o -Wall
 rgblink -o bin/${program_name}.gb --map bin/${program_name}.map bin/main.o

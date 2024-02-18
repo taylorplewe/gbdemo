@@ -22,8 +22,7 @@ body {
 p {
   font-style: italic;
   color: #09475d;
-  margin-left: 16px;
-  margin-right: 16px;
+  margin: 16px;
 }
 
 a {
@@ -36,7 +35,6 @@ a {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100%;
   touch-action: none;
   box-shadow: 0px 20px 60px rgba(0, 0, 0, .8);
 }
@@ -51,6 +49,10 @@ a {
 
 #gameContainer {
   display: block;
+}
+
+#controlsLegend {
+  display: none;
 }
 
 #controller {
@@ -268,6 +270,23 @@ a {
   }
   #game {
     width: 640px;
+  }
+  #controlsLegend {
+    position: absolute;
+    left: 256px;
+    height: 100vh;
+    align-items: center;
+    display: flex;
+    gap: 8px;
+  }
+  legend {
+    color: #09475d;
+  }
+  #controlsLegend:first-child {
+    text-align: right;
+  }
+  #controlsLegend:last-child {
+    font-weight: bold;
   }
   p {
     margin-left: 0;
