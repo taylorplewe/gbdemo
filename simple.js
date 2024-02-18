@@ -72,13 +72,6 @@ const changePal = palIdx => {
   emulator.setBuiltinPalette(palIdx);
 };
 
-window.addEventListener('keydown', e => {
-  if (e.key === 'esc') {
-    document.getElementById('gameContainer').requestFullscreen();
-    document.getElementById('gameContainer').classList.add('fullsc');
-  }
-})
-
 // Extract stuff from the vue.js implementation in demo.js.
 class VM {
   constructor() {
