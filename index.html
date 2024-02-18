@@ -1,18 +1,19 @@
 <!DOCTYPE html>
-<!-- copied from
-https://github.com/chrismaltby/gb-studio/blob/v2beta/appData/js-emulator/index.html
-(see LICENSE.gbstudio)
--->
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="simple.css">
-  <title>binjgb (simple)</title>
+  <title>Taylor's Dope Gameboy Demo</title>
 </head>
 <body>
-  <div id="game">
-    <canvas id="mainCanvas" width="160" height="144">No Canvas Support</canvas>
+  <div id="gameContainer">
+    <div id="game">
+      <canvas id="mainCanvas" width="160" height="144">No Canvas Support</canvas>
+    </div>
+    <p>by Taylor Plewe</p>
+    <p>view the <a href="https://github.com/taylorplewe/tdgbd">source code</a></p>
+    <p>using the <a href="https://github.com/binji/binjgb">binjgb</a> WebAssembly Gameboy emulator</p>
   </div>
   <div id="controller">
     <div id="controller_dpad">
