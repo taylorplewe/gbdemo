@@ -4,7 +4,7 @@ A Gameboy game your father would approve of.
 
 ![tdgbd](https://github.com/taylorplewe/tdgbd/assets/69979860/57009502-603d-42fc-bffa-14dc956b1333)
 
-### Download just the game ROM: [tdgbd.gb](/bin/gb_guy_in_field.gb)
+### Download just the game ROM: [tdgbd.gb](/bin/tdgbd.gb)
 
 ### [Play it in the browser](https://taylorplewe.github.io/tdgbd/) with the binjgb emulator (PLEASE READ NOTE BELOW)
 
