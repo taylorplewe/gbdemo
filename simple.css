@@ -93,7 +93,7 @@ a {
   image-rendering: crisp-edges;
 }
 
-#gameContainer {
+main {
   display: block;
 }
 
@@ -306,7 +306,7 @@ a {
 
 /* Devices large enough for landscape */
 @media only screen and (min-width: 300px) and (orientation: landscape) {
-  #gameContainer {
+  main {
     width: 100vw;
     height: 100vh;
     display: flex;
