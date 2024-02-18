@@ -246,6 +246,7 @@ class Emulator {
 
   setBuiltinPalette(palIdx) {
     this.module._emulator_set_builtin_palette(this.e, PALETTES[palIdx]);
+    document.getElementById('debugggg').innerText = `${palIdx}`;
   }
 
   get isRewinding() {

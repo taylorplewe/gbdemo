@@ -19,6 +19,24 @@ body {
   overflow: hidden;
 }
 
+#colSelector {
+  border: 1px solid #0d6a8c;
+  cursor: pointer;
+  display: flex;
+  gap: 0;
+}
+#colSelectorButton {
+  background-color: transparent;
+  padding: 8px;
+}
+
+#colGray {
+  background: #aaa;
+}
+#colGreen {
+  background-color: #8b956d;
+}
+
 p {
   font-style: italic;
   color: #09475d;
