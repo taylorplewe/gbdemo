@@ -126,7 +126,9 @@ const vm = new VM();
 // Load a ROM.
 (async function go() {
   let response = await fetch(ROM_FILENAME);
+  console.log('response', response);
   let romBuffer = await response.arrayBuffer();
+  console.log('romBuffer', romBuffer);
   const extRam = new Uint8Array(JSON.parse(localStorage.getItem('extram')));
   Emulator.start(await binjgbPromise, romBuffer, extRam);
   emulator.setBuiltinPalette(vm.palIdx);
