@@ -14,7 +14,7 @@ const ROM_FILENAME = 'tdgbd.gb';
 const ENABLE_FAST_FORWARD = true;
 const ENABLE_REWIND = true;
 const ENABLE_PAUSE = false;
-const ENABLE_SWITCH_PALETTES = false;
+const ENABLE_SWITCH_PALETTES = true;
 const OSGP_DEADZONE = 0.1;    // On screen gamepad deadzone range
 const CGB_COLOR_CURVE = 0;    // 0: none, 1: Sameboy "Emulate Hardware" 2: Gambatte/Gameboy Online
 
