@@ -765,7 +765,7 @@ class Rewind {
   constructor(module, e) {
     this.module = module;
     this.e = e;
-    this.joypadBufferPtr = this.module._joypad_new();
+    // this.joypadBufferPtr = this.module._joypad_new();
     this.statePtr = 0;
     this.bufferPtr = this.module._rewind_new_simple(
         e, REWIND_FRAMES_PER_BASE_STATE, REWIND_BUFFER_CAPACITY);
@@ -774,7 +774,7 @@ class Rewind {
 
   destroy() {
     this.module._rewind_delete(this.bufferPtr);
-    this.module._joypad_delete(this.joypadBufferPtr);
+    // this.module._joypad_delete(this.joypadBufferPtr);
   }
 
   get oldestTicks() {
