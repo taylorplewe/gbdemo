@@ -34,13 +34,6 @@ const CGB_COLOR_CURVE = 0;    // 0: none, 1: Sameboy "Emulate Hardware" 2: Gamba
 const DEFAULT_PALETTE_IDX = 0;
 const PALETTES = [0, 75, 64];
 
-// It's probably OK to leave these alone. But you can tweak them to get better
-// rewind performance.
-const REWIND_FRAMES_PER_BASE_STATE = 45;  // How many delta frames until keyframe
-const REWIND_BUFFER_CAPACITY = 4 * 1024 * 1024;  // Total rewind capacity
-const REWIND_FACTOR = 1.5;    // How fast is rewind compared to normal speed
-const REWIND_UPDATE_MS = 16;  // Rewind setInterval rate
-
 // Probably OK to leave these alone too.
 const AUDIO_FRAMES = 4096;      // Number of audio frames pushed per buffer
 const AUDIO_LATENCY_SEC = 0.1;
@@ -80,10 +73,6 @@ class VM {
     this.paused_ = false;
     this.volume = 0.5;
     this.palIdx = DEFAULT_PALETTE_IDX;
-    this.rewind = {
-      minTicks: 0,
-      maxTicks: 0,
-    };
     setInterval(() => {
       if (this.extRamUpdated) {
         this.updateExtRam();
@@ -101,8 +90,6 @@ class VM {
     if (newPaused) {
       emulator.pause();
       this.ticks = emulator.ticks;
-      this.rewind.minTicks = emulator.rewind.oldestTicks;
-      this.rewind.maxTicks = emulator.rewind.newestTicks;
     } else {
       emulator.resume();
     }
@@ -167,8 +154,6 @@ class Emulator {
 
     this.audio = new Audio(module, this.e);
     this.video = new Video(module, this.e, $('canvas'));
-    this.rewind = new Rewind(module, this.e);
-    this.rewindIntervalId = 0;
 
     this.lastRafSec = 0;
     this.leftoverTicks = 0;
@@ -191,7 +176,6 @@ class Emulator {
     this.unbindKeys();
     this.cancelAnimationFrame();
     clearInterval(this.rewindIntervalId);
-    this.rewind.destroy();
     this.module._emulator_delete(this.e);
     this.module._free(this.romDataPtr);
   }
@@ -244,50 +228,6 @@ class Emulator {
 
   setBuiltinPalette(palIdx) {
     this.module._emulator_set_builtin_palette(this.e, PALETTES[palIdx]);
-    document.getElementById('debugggg').innerText = `${palIdx}`;
-  }
-
-  get isRewinding() {
-    return ENABLE_REWIND && this.rewind.isRewinding;
-  }
-
-  beginRewind() {
-    if (!ENABLE_REWIND) { return; }
-    this.rewind.beginRewind();
-  }
-
-  rewindToTicks(ticks) {
-    if (!ENABLE_REWIND) { return; }
-    if (this.rewind.rewindToTicks(ticks)) {
-      this.runUntil(ticks);
-      this.video.renderTexture();
-    }
-  }
-
-  endRewind() {
-    if (!ENABLE_REWIND) { return; }
-    this.rewind.endRewind();
-    this.lastRafSec = 0;
-    this.leftoverTicks = 0;
-    this.audio.startSec = 0;
-  }
-
-  set autoRewind(enabled) {
-    if (!ENABLE_REWIND) { return; }
-    if (enabled) {
-      this.rewindIntervalId = setInterval(() => {
-        const oldest = this.rewind.oldestTicks;
-        const start = this.ticks;
-        const delta =
-            REWIND_FACTOR * REWIND_UPDATE_MS / 1000 * CPU_TICKS_PER_SECOND;
-        const rewindTo = Math.max(oldest, start - delta);
-        this.rewindToTicks(rewindTo);
-        vm.ticks = emulator.ticks;
-      }, REWIND_UPDATE_MS);
-    } else {
-      clearInterval(this.rewindIntervalId);
-      this.rewindIntervalId = 0;
-    }
   }
 
   requestAnimationFrame() {
@@ -311,7 +251,6 @@ class Emulator {
     while (true) {
       const event = this.module._emulator_run_until_f64(this.e, ticks);
       if (event & EVENT_NEW_FRAME) {
-        this.rewind.pushBuffer();
         this.video.uploadTexture();
       }
       if ((event & EVENT_AUDIO_BUFFER_FULL) && !this.isRewinding) {
@@ -758,60 +697,5 @@ class WebGLRenderer {
     this.gl.texSubImage2D(
         this.gl.TEXTURE_2D, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, this.gl.RGBA,
         this.gl.UNSIGNED_BYTE, buffer);
-  }
-}
-
-class Rewind {
-  constructor(module, e) {
-    this.module = module;
-    this.e = e;
-    // this.joypadBufferPtr = this.module._joypad_new();
-    this.statePtr = 0;
-    this.bufferPtr = this.module._rewind_new_simple(
-        e, REWIND_FRAMES_PER_BASE_STATE, REWIND_BUFFER_CAPACITY);
-    this.module._emulator_set_default_joypad_callback(e, this.joypadBufferPtr);
-  }
-
-  destroy() {
-    this.module._rewind_delete(this.bufferPtr);
-    // this.module._joypad_delete(this.joypadBufferPtr);
-  }
-
-  get oldestTicks() {
-    return this.module._rewind_get_oldest_ticks_f64(this.bufferPtr);
-  }
-
-  get newestTicks() {
-    return this.module._rewind_get_newest_ticks_f64(this.bufferPtr);
-  }
-
-  pushBuffer() {
-    if (!this.isRewinding) {
-      this.module._rewind_append(this.bufferPtr, this.e);
-    }
-  }
-
-  get isRewinding() {
-    return this.statePtr !== 0;
-  }
-
-  beginRewind() {
-    if (this.isRewinding) return;
-    this.statePtr =
-        this.module._rewind_begin(this.e, this.bufferPtr, this.joypadBufferPtr);
-  }
-
-  rewindToTicks(ticks) {
-    if (!this.isRewinding) return;
-    return this.module._rewind_to_ticks_wrapper(this.statePtr, ticks) ===
-        RESULT_OK;
-  }
-
-  endRewind() {
-    if (!this.isRewinding) return;
-    this.module._emulator_set_default_joypad_callback(
-        this.e, this.joypadBufferPtr);
-    this.module._rewind_end(this.statePtr);
-    this.statePtr = 0;
   }
 }
