@@ -59,7 +59,6 @@ const startEl = $('#controller_start');
 const bEl = $('#controller_b');
 const aEl = $('#controller_a');
 
-debugger;
 const binjgbPromise = Binjgb();
 
 const changePal = palIdx => {
@@ -111,6 +110,7 @@ const vm = new VM();
 
 // Load a ROM.
 (async function go() {
+  debugger;
   let response = await fetch(ROM_FILENAME);
   let romBuffer = await response.arrayBuffer();
   const extRam = new Uint8Array(JSON.parse(localStorage.getItem('extram')));
