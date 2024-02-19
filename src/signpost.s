@@ -1,12 +1,14 @@
 ; bools
-	def SIGNPOST_BOOL_BUBBLE		= %0000_0001
-	def signpost_bool_test_bubble	equs "bit 0, a"
-	def signpost_bool_set_bubble	equs "ldh a, [signpost_bools]\nset 0, a\nldh [signpost_bools], a"
-	def signpost_bool_clear_bubble	equs "ldh a, [signpost_bools]\nres 0, a\nldh [signpost_bools], a"
-	def SIGNPOST_BOOL_ACTIVE		= %0000_0010
-	def signpost_bool_test_active	equs "bit 1, a"
-	def signpost_bool_set_active	equs "ldh a, [signpost_bools]\nset 1, a\nldh [signpost_bools], a"
-	def signpost_bool_clear_active	equs "ldh a, [signpost_bools]\nres 1, a\nldh [signpost_bools], a"
+	def SIGNPOST_BITN_BUBBLE		= 0
+	def SIGNPOST_BOOL_BUBBLE		= 1 << SIGNPOST_BITN_BUBBLE
+	def signpost_bool_test_bubble	equs "bit SIGNPOST_BITN_BUBBLE, a"
+	def signpost_bool_set_bubble	equs "ldh a, [signpost_bools]\nset SIGNPOST_BITN_BUBBLE, a\nldh [signpost_bools], a"
+	def signpost_bool_clear_bubble	equs "ldh a, [signpost_bools]\nres SIGNPOST_BITN_BUBBLE, a\nldh [signpost_bools], a"
+	def SIGNPOST_BITN_ACTIVE		= 1
+	def SIGNPOST_BOOL_ACTIVE		= 1 << SIGNPOST_BITN_ACTIVE
+	def signpost_bool_test_active	equs "bit SIGNPOST_BITN_ACTIVE, a"
+	def signpost_bool_set_active	equs "ldh a, [signpost_bools]\nset SIGNPOST_BITN_ACTIVE, a\nldh [signpost_bools], a"
+	def signpost_bool_clear_active	equs "ldh a, [signpost_bools]\nres SIGNPOST_BITN_ACTIVE, a\nldh [signpost_bools], a"
 
 def BUBBLE_TILE_1 = $60
 def BUBBLE_TILE_2 = $62

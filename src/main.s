@@ -328,19 +328,15 @@ run_dma_end:
 section "Tile data", ROM0
 
 tiles:
-	incbin "bin/chr.bin"
+	incbin "bin/main.chr"
 tiles_end:
 
-letter_a:
-	incbin "bin/letter_a.bin"
-letter_a_end:
-
 mask_tiles:
-	incbin "bin/masks.bin.half"
+	incbin "bin/masks.chr.half"
 mask_tiles_end:
 
 shadow_tiles:
-	incbin "bin/shadows.bin.half"
+	incbin "bin/shadows.chr.half"
 shadow_tiles_end:
 
 sng_caves:

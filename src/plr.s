@@ -1,14 +1,14 @@
 	; plr_bools
-		def PLR_BOOLS_FACING_L	= %00100000 ; same as OAMF_XFLIP
 		def PLR_BITN_FACING_L	= 5
-		def if_plr_facing_l		equs "if_bool_h plr_bools, 5"
-		def plr_clear_facing_l	equs "ldh a, [plr_bools]\nres 5, a\nldh [plr_bools], a"
-		def plr_set_facing_l	equs "ldh a, [plr_bools]\nset 5, a\nldh [plr_bools], a"
-		def PLR_BOOLS_GROUND	= %00000001
+		def PLR_BOOLS_FACING_L	= 1 << PLR_BITN_FACING_L ; same as OAMF_XFLIP
+		def if_plr_facing_l		equs "if_bool_h plr_bools, PLR_BITN_FACING_L"
+		def plr_clear_facing_l	equs "ldh a, [plr_bools]\nres PLR_BITN_FACING_L, a\nldh [plr_bools], a"
+		def plr_set_facing_l	equs "ldh a, [plr_bools]\nset PLR_BITN_FACING_L, a\nldh [plr_bools], a"
 		def PLR_BITN_GROUND		= 0
-		def if_plr_ground		equs "if_bool_h plr_bools, 0"
-		def plr_clear_ground	equs "ldh a, [plr_bools]\nres 0, a\nldh [plr_bools], a"
-		def plr_set_ground		equs "ldh a, [plr_bools]\nset 0, a\nldh [plr_bools], a"
+		def PLR_BOOLS_GROUND	= 1 << PLR_BITN_GROUND
+		def if_plr_ground		equs "if_bool_h plr_bools, PLR_BITN_GROUND"
+		def plr_clear_ground	equs "ldh a, [plr_bools]\nres PLR_BITN_GROUND, a\nldh [plr_bools], a"
+		def plr_set_ground		equs "ldh a, [plr_bools]\nset PLR_BITN_GROUND, a\nldh [plr_bools], a"
 		macro plr_bools_test_ground
 			ldh a, [plr_bools]
 			bit 0, a

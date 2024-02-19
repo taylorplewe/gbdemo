@@ -1,34 +1,34 @@
 ; bools
-	def TXT_BOOLS_DOWN		= %0000_0001
-	def TXT_BOOLS_PRINTCHR	= %0000_0010
-	def TXT_BOOLS_PREPCHR	= %0000_0100
-	def TXT_BOOLS_ARROW		= %0000_1000
-	def TXT_BOOLS_CLEAR		= %0001_0000
-	def TXT_BOOLS_END		= %0010_0000
 	def TXT_BITN_DOWN		= 0
 	def TXT_BITN_PRINTCHR	= 1
 	def TXT_BITN_PREPCHR	= 2
 	def TXT_BITN_ARROW		= 3
 	def TXT_BITN_CLEAR		= 4
 	def TXT_BITN_END		= 5
-	def if_txt_down			equs "if_bool_h txt_bools, 0"
-	def if_txt_printchr 	equs "if_bool_h txt_bools, 1"
-	def if_txt_prepchr		equs "if_bool_h txt_bools, 2"
-	def if_txt_arrow		equs "if_bool_h txt_bools, 3"
-	def if_txt_clear		equs "if_bool_h txt_bools, 4"
-	def if_txt_end			equs "if_bool_h txt_bools, 5"
-	def txt_clr_down		equs "ldh a, [txt_bools]\nres 0, a\nldh [txt_bools], a"
-	def txt_clr_printchr	equs "ldh a, [txt_bools]\nres 1, a\nldh [txt_bools], a"
-	def txt_clr_prepchr		equs "ldh a, [txt_bools]\nres 2, a\nldh [txt_bools], a"
-	def txt_clr_arrow		equs "ldh a, [txt_bools]\nres 3, a\nldh [txt_bools], a"
-	def txt_clr_clear		equs "ldh a, [txt_bools]\nres 4, a\nldh [txt_bools], a"
-	def txt_clr_end			equs "ldh a, [txt_bools]\nres 5, a\nldh [txt_bools], a"
-	def txt_set_down		equs "ldh a, [txt_bools]\nset 0, a\nldh [txt_bools], a"
-	def txt_set_printchr	equs "ldh a, [txt_bools]\nset 1, a\nldh [txt_bools], a"
-	def txt_set_prepchr		equs "ldh a, [txt_bools]\nset 2, a\nldh [txt_bools], a"
-	def txt_set_arrow		equs "ldh a, [txt_bools]\nset 3, a\nldh [txt_bools], a"
-	def txt_set_clear		equs "ldh a, [txt_bools]\nset 4, a\nldh [txt_bools], a"
-	def txt_set_end			equs "ldh a, [txt_bools]\nset 5, a\nldh [txt_bools], a"
+	def TXT_BOOLS_DOWN		= 1 << TXT_BITN_DOWN
+	def TXT_BOOLS_PRINTCHR	= 1 << TXT_BITN_PRINTCHR
+	def TXT_BOOLS_PREPCHR	= 1 << TXT_BITN_PREPCHR
+	def TXT_BOOLS_ARROW		= 1 << TXT_BITN_ARROW
+	def TXT_BOOLS_CLEAR		= 1 << TXT_BITN_CLEAR
+	def TXT_BOOLS_END		= 1 << TXT_BITN_END
+	def if_txt_down			equs "if_bool_h txt_bools, TXT_BITN_DOWN"
+	def if_txt_printchr 	equs "if_bool_h txt_bools, TXT_BITN_PRINTCHR"
+	def if_txt_prepchr		equs "if_bool_h txt_bools, TXT_BITN_PREPCHR"
+	def if_txt_arrow		equs "if_bool_h txt_bools, TXT_BITN_ARROW"
+	def if_txt_clear		equs "if_bool_h txt_bools, TXT_BITN_CLEAR"
+	def if_txt_end			equs "if_bool_h txt_bools, TXT_BITN_END"
+	def txt_clr_down		equs "ldh a, [txt_bools]\nres TXT_BITN_DOWN, a\nldh [txt_bools], a"
+	def txt_clr_printchr	equs "ldh a, [txt_bools]\nres TXT_BITN_PRINTCHR, a\nldh [txt_bools], a"
+	def txt_clr_prepchr		equs "ldh a, [txt_bools]\nres TXT_BITN_PREPCHR, a\nldh [txt_bools], a"
+	def txt_clr_arrow		equs "ldh a, [txt_bools]\nres TXT_BITN_ARROW, a\nldh [txt_bools], a"
+	def txt_clr_clear		equs "ldh a, [txt_bools]\nres TXT_BITN_CLEAR, a\nldh [txt_bools], a"
+	def txt_clr_end			equs "ldh a, [txt_bools]\nres TXT_BITN_END, a\nldh [txt_bools], a"
+	def txt_set_down		equs "ldh a, [txt_bools]\nset TXT_BITN_DOWN, a\nldh [txt_bools], a"
+	def txt_set_printchr	equs "ldh a, [txt_bools]\nset TXT_BITN_PRINTCHR, a\nldh [txt_bools], a"
+	def txt_set_prepchr		equs "ldh a, [txt_bools]\nset TXT_BITN_PREPCHR, a\nldh [txt_bools], a"
+	def txt_set_arrow		equs "ldh a, [txt_bools]\nset TXT_BITN_ARROW, a\nldh [txt_bools], a"
+	def txt_set_clear		equs "ldh a, [txt_bools]\nset TXT_BITN_CLEAR, a\nldh [txt_bools], a"
+	def txt_set_end			equs "ldh a, [txt_bools]\nset TXT_BITN_END, a\nldh [txt_bools], a"
 ;
 
 	def TXT_LINE1_VRAM_ADDR = $9c21
