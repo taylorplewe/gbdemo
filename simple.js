@@ -115,6 +115,7 @@ const vm = new VM();
   const extRam = new Uint8Array(JSON.parse(localStorage.getItem('extram')));
   Emulator.start(await binjgbPromise, romBuffer, extRam);
   emulator.setBuiltinPalette(vm.palIdx);
+  debugger;
 })();
 
 
