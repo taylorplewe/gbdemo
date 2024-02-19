@@ -59,6 +59,7 @@ const startEl = $('#controller_start');
 const bEl = $('#controller_b');
 const aEl = $('#controller_a');
 
+debugger;
 const binjgbPromise = Binjgb();
 
 const changePal = palIdx => {
@@ -115,7 +116,6 @@ const vm = new VM();
   const extRam = new Uint8Array(JSON.parse(localStorage.getItem('extram')));
   Emulator.start(await binjgbPromise, romBuffer, extRam);
   emulator.setBuiltinPalette(vm.palIdx);
-  debugger;
 })();
 
 
