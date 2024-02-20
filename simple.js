@@ -472,12 +472,12 @@ class Emulator {
 
   bindKeys() {
     this.keyFuncs = {
-      'ArrowDown': this.setJoypDown.bind(this),
-      'ArrowLeft': this.setJoypLeft.bind(this),
-      'ArrowRight': this.setJoypRight.bind(this),
-      'ArrowUp': this.setJoypUp.bind(this),
-      'KeyZ': this.setJoypB.bind(this),
-      'KeyX': this.setJoypA.bind(this),
+      'KeyS': this.setJoypDown.bind(this),
+      'KeyA': this.setJoypLeft.bind(this),
+      'KeyD': this.setJoypRight.bind(this),
+      'KeyW': this.setJoypUp.bind(this),
+      'KeyK': this.setJoypB.bind(this),
+      'KeyL': this.setJoypA.bind(this),
       'Enter': this.setJoypStart.bind(this),
       'Tab': this.setJoypSelect.bind(this),
       'Backspace': this.keyRewind.bind(this),
