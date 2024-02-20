@@ -162,6 +162,7 @@ class Emulator {
         .fill(0)
         .set(new Uint8Array(romBuffer));
     console.log('this.romDataPtr:', this.romDataPtr);
+    console.log('size:', size);
     console.log('about to instntiate new emulator');
     this.e = this.module._emulator_new_simple(
         this.romDataPtr, size, Audio.ctx.sampleRate, AUDIO_FRAMES,
