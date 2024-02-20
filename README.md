@@ -6,7 +6,7 @@ A Gameboy game your father would approve of.
 
 ### Download just the game ROM: [tdgbd.gb](/bin/tdgbd.gb)
 
-### [Play it in the browser](https://taylorplewe.github.io/tdgbd/) with the binjgb emulator (PLEASE READ NOTE BELOW)
+### [Play it in the browser](https://taylorplewe.github.io/tdgbd/)
 
 Higher quality video: [https://youtu.be/AHXYl89QJTo](https://youtu.be/AHXYl89QJTo)
 
