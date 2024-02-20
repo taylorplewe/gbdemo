@@ -10,7 +10,7 @@
 "use strict";
 
 // User configurable.
-const ROM_FILENAME = 'porklike.gb';
+const ROM_FILENAME = 'tdgbd.gb';
 const ENABLE_FAST_FORWARD = true;
 const ENABLE_REWIND = true;
 const ENABLE_PAUSE = false;
@@ -141,7 +141,6 @@ function makeWasmBuffer(module, ptr, size) {
 class Emulator {
   static start(module, romBuffer, extRamBuffer) {
     Emulator.stop();
-    debugger;
     emulator = new Emulator(module, romBuffer, extRamBuffer);
     emulator.run();
   }
@@ -161,9 +160,6 @@ class Emulator {
     makeWasmBuffer(this.module, this.romDataPtr, size)
         .fill(0)
         .set(new Uint8Array(romBuffer));
-    console.log('this.romDataPtr:', this.romDataPtr);
-    console.log('size:', size);
-    console.log('about to instntiate new emulator');
     this.e = this.module._emulator_new_simple(
         this.romDataPtr, size, Audio.ctx.sampleRate, AUDIO_FRAMES,
         CGB_COLOR_CURVE);
@@ -770,7 +766,7 @@ class Rewind {
   constructor(module, e) {
     this.module = module;
     this.e = e;
-    // this.joypadBufferPtr = this.module._joypad_new();
+    this.joypadBufferPtr = this.module._joypad_new();
     this.statePtr = 0;
     this.bufferPtr = this.module._rewind_new_simple(
         e, REWIND_FRAMES_PER_BASE_STATE, REWIND_BUFFER_CAPACITY);
