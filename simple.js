@@ -10,13 +10,13 @@
 "use strict";
 
 // User configurable.
-const ROM_FILENAME = 'tdgbd.gb';
+const ROM_FILENAME = 'porklike.gb';
 const ENABLE_FAST_FORWARD = true;
 const ENABLE_REWIND = true;
 const ENABLE_PAUSE = false;
 const ENABLE_SWITCH_PALETTES = true;
 const OSGP_DEADZONE = 0.1;    // On screen gamepad deadzone range
-const CGB_COLOR_CURVE = 0;    // 0: none, 1: Sameboy "Emulate Hardware" 2: Gambatte/Gameboy Online
+const CGB_COLOR_CURVE = 2;    // 0: none, 1: Sameboy "Emulate Hardware" 2: Gambatte/Gameboy Online
 
 // List of DMG palettes to switch between. By default it includes all 84
 // built-in palettes. If you want to restrict this, change it to an array of
@@ -31,8 +31,21 @@ const CGB_COLOR_CURVE = 0;    // 0: none, 1: Sameboy "Emulate Hardware" 2: Gamba
 //   const DEFAULT_PALETTE_IDX = 1;
 //   const PALETTES = [16, 32, 64];
 //
-const DEFAULT_PALETTE_IDX = 0;
-const PALETTES = [0, 75, 64];
+const DEFAULT_PALETTE_IDX = 79;
+const PALETTES = [
+  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16,
+  17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+  34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
+  51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67,
+  68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83,
+];
+
+// It's probably OK to leave these alone. But you can tweak them to get better
+// rewind performance.
+const REWIND_FRAMES_PER_BASE_STATE = 45;  // How many delta frames until keyframe
+const REWIND_BUFFER_CAPACITY = 4 * 1024 * 1024;  // Total rewind capacity
+const REWIND_FACTOR = 1.5;    // How fast is rewind compared to normal speed
+const REWIND_UPDATE_MS = 16;  // Rewind setInterval rate
 
 // Probably OK to leave these alone too.
 const AUDIO_FRAMES = 4096;      // Number of audio frames pushed per buffer
@@ -61,10 +74,6 @@ const aEl = $('#controller_a');
 
 const binjgbPromise = Binjgb();
 
-const changePal = palIdx => {
-  emulator.setBuiltinPalette(palIdx);
-};
-
 // Extract stuff from the vue.js implementation in demo.js.
 class VM {
   constructor() {
@@ -73,6 +82,10 @@ class VM {
     this.paused_ = false;
     this.volume = 0.5;
     this.palIdx = DEFAULT_PALETTE_IDX;
+    this.rewind = {
+      minTicks: 0,
+      maxTicks: 0,
+    };
     setInterval(() => {
       if (this.extRamUpdated) {
         this.updateExtRam();
@@ -90,6 +103,8 @@ class VM {
     if (newPaused) {
       emulator.pause();
       this.ticks = emulator.ticks;
+      this.rewind.minTicks = emulator.rewind.oldestTicks;
+      this.rewind.maxTicks = emulator.rewind.newestTicks;
     } else {
       emulator.resume();
     }
@@ -110,7 +125,6 @@ const vm = new VM();
 
 // Load a ROM.
 (async function go() {
-  debugger;
   let response = await fetch(ROM_FILENAME);
   let romBuffer = await response.arrayBuffer();
   const extRam = new Uint8Array(JSON.parse(localStorage.getItem('extram')));
@@ -127,6 +141,7 @@ function makeWasmBuffer(module, ptr, size) {
 class Emulator {
   static start(module, romBuffer, extRamBuffer) {
     Emulator.stop();
+    debugger;
     emulator = new Emulator(module, romBuffer, extRamBuffer);
     emulator.run();
   }
@@ -146,6 +161,8 @@ class Emulator {
     makeWasmBuffer(this.module, this.romDataPtr, size)
         .fill(0)
         .set(new Uint8Array(romBuffer));
+    console.log('this.romDataPtr:', this.romDataPtr);
+    console.log('about to instntiate new emulator');
     this.e = this.module._emulator_new_simple(
         this.romDataPtr, size, Audio.ctx.sampleRate, AUDIO_FRAMES,
         CGB_COLOR_CURVE);
@@ -155,6 +172,8 @@ class Emulator {
 
     this.audio = new Audio(module, this.e);
     this.video = new Video(module, this.e, $('canvas'));
+    this.rewind = new Rewind(module, this.e);
+    this.rewindIntervalId = 0;
 
     this.lastRafSec = 0;
     this.leftoverTicks = 0;
@@ -177,6 +196,7 @@ class Emulator {
     this.unbindKeys();
     this.cancelAnimationFrame();
     clearInterval(this.rewindIntervalId);
+    this.rewind.destroy();
     this.module._emulator_delete(this.e);
     this.module._free(this.romDataPtr);
   }
@@ -231,6 +251,49 @@ class Emulator {
     this.module._emulator_set_builtin_palette(this.e, PALETTES[palIdx]);
   }
 
+  get isRewinding() {
+    return ENABLE_REWIND && this.rewind.isRewinding;
+  }
+
+  beginRewind() {
+    if (!ENABLE_REWIND) { return; }
+    this.rewind.beginRewind();
+  }
+
+  rewindToTicks(ticks) {
+    if (!ENABLE_REWIND) { return; }
+    if (this.rewind.rewindToTicks(ticks)) {
+      this.runUntil(ticks);
+      this.video.renderTexture();
+    }
+  }
+
+  endRewind() {
+    if (!ENABLE_REWIND) { return; }
+    this.rewind.endRewind();
+    this.lastRafSec = 0;
+    this.leftoverTicks = 0;
+    this.audio.startSec = 0;
+  }
+
+  set autoRewind(enabled) {
+    if (!ENABLE_REWIND) { return; }
+    if (enabled) {
+      this.rewindIntervalId = setInterval(() => {
+        const oldest = this.rewind.oldestTicks;
+        const start = this.ticks;
+        const delta =
+            REWIND_FACTOR * REWIND_UPDATE_MS / 1000 * CPU_TICKS_PER_SECOND;
+        const rewindTo = Math.max(oldest, start - delta);
+        this.rewindToTicks(rewindTo);
+        vm.ticks = emulator.ticks;
+      }, REWIND_UPDATE_MS);
+    } else {
+      clearInterval(this.rewindIntervalId);
+      this.rewindIntervalId = 0;
+    }
+  }
+
   requestAnimationFrame() {
     this.rafCancelToken = requestAnimationFrame(this.rafCallback.bind(this));
   }
@@ -252,6 +315,7 @@ class Emulator {
     while (true) {
       const event = this.module._emulator_run_until_f64(this.e, ticks);
       if (event & EVENT_NEW_FRAME) {
+        this.rewind.pushBuffer();
         this.video.uploadTexture();
       }
       if ((event & EVENT_AUDIO_BUFFER_FULL) && !this.isRewinding) {
@@ -413,12 +477,12 @@ class Emulator {
 
   bindKeys() {
     this.keyFuncs = {
-      'KeyS': this.setJoypDown.bind(this),
-      'KeyA': this.setJoypLeft.bind(this),
-      'KeyD': this.setJoypRight.bind(this),
-      'KeyW': this.setJoypUp.bind(this),
-      'KeyK': this.setJoypB.bind(this),
-      'KeyL': this.setJoypA.bind(this),
+      'ArrowDown': this.setJoypDown.bind(this),
+      'ArrowLeft': this.setJoypLeft.bind(this),
+      'ArrowRight': this.setJoypRight.bind(this),
+      'ArrowUp': this.setJoypUp.bind(this),
+      'KeyZ': this.setJoypB.bind(this),
+      'KeyX': this.setJoypA.bind(this),
       'Enter': this.setJoypStart.bind(this),
       'Tab': this.setJoypSelect.bind(this),
       'Backspace': this.keyRewind.bind(this),
@@ -698,5 +762,60 @@ class WebGLRenderer {
     this.gl.texSubImage2D(
         this.gl.TEXTURE_2D, 0, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, this.gl.RGBA,
         this.gl.UNSIGNED_BYTE, buffer);
+  }
+}
+
+class Rewind {
+  constructor(module, e) {
+    this.module = module;
+    this.e = e;
+    // this.joypadBufferPtr = this.module._joypad_new();
+    this.statePtr = 0;
+    this.bufferPtr = this.module._rewind_new_simple(
+        e, REWIND_FRAMES_PER_BASE_STATE, REWIND_BUFFER_CAPACITY);
+    this.module._emulator_set_default_joypad_callback(e, this.joypadBufferPtr);
+  }
+
+  destroy() {
+    this.module._rewind_delete(this.bufferPtr);
+    this.module._joypad_delete(this.joypadBufferPtr);
+  }
+
+  get oldestTicks() {
+    return this.module._rewind_get_oldest_ticks_f64(this.bufferPtr);
+  }
+
+  get newestTicks() {
+    return this.module._rewind_get_newest_ticks_f64(this.bufferPtr);
+  }
+
+  pushBuffer() {
+    if (!this.isRewinding) {
+      this.module._rewind_append(this.bufferPtr, this.e);
+    }
+  }
+
+  get isRewinding() {
+    return this.statePtr !== 0;
+  }
+
+  beginRewind() {
+    if (this.isRewinding) return;
+    this.statePtr =
+        this.module._rewind_begin(this.e, this.bufferPtr, this.joypadBufferPtr);
+  }
+
+  rewindToTicks(ticks) {
+    if (!this.isRewinding) return;
+    return this.module._rewind_to_ticks_wrapper(this.statePtr, ticks) ===
+        RESULT_OK;
+  }
+
+  endRewind() {
+    if (!this.isRewinding) return;
+    this.module._emulator_set_default_joypad_callback(
+        this.e, this.joypadBufferPtr);
+    this.module._rewind_end(this.statePtr);
+    this.statePtr = 0;
   }
 }
