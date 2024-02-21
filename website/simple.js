@@ -10,7 +10,7 @@
 "use strict";
 
 // User configurable.
-const ROM_FILENAME = 'bin/gb_guy_in_field.gb';
+const ROM_FILENAME = 'tdgbd.gb';
 const ENABLE_FAST_FORWARD = true;
 const ENABLE_REWIND = true;
 const ENABLE_PAUSE = false;
@@ -31,14 +31,8 @@ const CGB_COLOR_CURVE = 2;    // 0: none, 1: Sameboy "Emulate Hardware" 2: Gamba
 //   const DEFAULT_PALETTE_IDX = 1;
 //   const PALETTES = [16, 32, 64];
 //
-const DEFAULT_PALETTE_IDX = 79;
-const PALETTES = [
-  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11, 12, 13, 14, 15, 16,
-  17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33,
-  34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
-  51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67,
-  68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83,
-];
+const DEFAULT_PALETTE_IDX = 1;
+const PALETTES = [0, 75, 64];
 
 // It's probably OK to leave these alone. But you can tweak them to get better
 // rewind performance.
@@ -73,6 +67,10 @@ const bEl = $('#controller_b');
 const aEl = $('#controller_a');
 
 const binjgbPromise = Binjgb();
+
+const changePal = palIdx => {
+  emulator.setBuiltinPalette(palIdx);
+}
 
 // Extract stuff from the vue.js implementation in demo.js.
 class VM {
@@ -246,7 +244,6 @@ class Emulator {
 
   setBuiltinPalette(palIdx) {
     this.module._emulator_set_builtin_palette(this.e, PALETTES[palIdx]);
-    document.getElementById('debugggg').innerText = `${palIdx}`;
   }
 
   get isRewinding() {
@@ -362,7 +359,14 @@ class Emulator {
   }
 
   updateOnscreenGamepad() {
+    this.updateLegendVisibility();
     $('#controller').style.display = this.touchEnabled ? 'block' : 'none';
+  }
+  
+  updateLegendVisibility() {
+    const legends = [...document.querySelectorAll('legend')];
+    const visibility = this.touchEnabled ? 'hidden' : 'visible';
+    legends.forEach(l => l.style.visibility = visibility);
   }
 
   bindTouch() {
@@ -475,12 +479,12 @@ class Emulator {
 
   bindKeys() {
     this.keyFuncs = {
-      'ArrowDown': this.setJoypDown.bind(this),
-      'ArrowLeft': this.setJoypLeft.bind(this),
-      'ArrowRight': this.setJoypRight.bind(this),
-      'ArrowUp': this.setJoypUp.bind(this),
-      'KeyZ': this.setJoypB.bind(this),
-      'KeyX': this.setJoypA.bind(this),
+      'KeyS': this.setJoypDown.bind(this),
+      'KeyA': this.setJoypLeft.bind(this),
+      'KeyD': this.setJoypRight.bind(this),
+      'KeyW': this.setJoypUp.bind(this),
+      'KeyK': this.setJoypB.bind(this),
+      'KeyL': this.setJoypA.bind(this),
       'Enter': this.setJoypStart.bind(this),
       'Tab': this.setJoypSelect.bind(this),
       'Backspace': this.keyRewind.bind(this),

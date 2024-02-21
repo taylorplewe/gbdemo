@@ -1,31 +1,82 @@
-/* copied from
- * https://github.com/chrismaltby/gb-studio/blob/v2beta/appData/js-emulator/css/style.css
- * (see LICENSE.gbstudio)
- *
- * modifications are marked with binjgb below.
- */
 body {
   background: #031921;
   color: #fff;
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue",
-    Helvetica, Arial, "Lucida Grande", sans-serif;
+  font-family: "Assistant", sans-serif;
   font-weight: 300;
-  margin: 0;  /* binjgb */
-  padding: 0;  /* binjgb */
+  margin: 0;
+  padding: 0;
   touch-action: none;
   -webkit-touch-callout: none;
   user-select: none;
-  -webkit-user-select: none;  /* binjgb */
+  -webkit-user-select: none;
   overflow: hidden;
+}
+
+#colSelectorAnchor {
+  position: relative;
+  width: 100%;
+}
+#colSelector {
+  position: absolute;
+  right: 16px;
+  cursor: pointer;
+  display: flex;
+  gap: 0;
+  margin-top: 16px;
+}
+.colorInner {
+  width: 20px;
+  height: 20px;
+}
+.colSelectorButton {
+  background-color: transparent;
+  padding: 12px;
+  border-top: 1px solid #0d6a8c;
+  border-bottom: 1px solid #0d6a8c;
+  border-left: 1px solid #0d6a8c;
+}
+.colSelectorButton:hover {
+  background-color: #09475d;
+}
+.colSelectorButton:first-of-type {
+  border-radius: 12px 0 0 12px;
+}
+.colSelectorButton:last-of-type {
+  border-radius: 0 12px 12px 0;
+  border-right: 1px solid #0d6a8c;
+}
+
+#colGray {
+  background-color: #aaa;
+}
+#colGreen {
+  background-color: #8b956d;
+}
+#colAutumn {
+  background-color: #dca456;
+}
+
+p {
+  font-style: italic;
+  font-weight: 600;
+  color: #09475d;
+  margin-top: 16px;
+  margin-left: 16px;
+  margin-right: 16px;
+  margin-bottom: 0;
+}
+
+a {
+  color: #0d6a8c;
+  font-weight: bold;
 }
 
 #game {
   display: flex;
   flex-direction: column;
-  position: absolute;
   width: 100%;
-  height: 100%;
   touch-action: none;
+  box-shadow: 0px 20px 60px rgba(0, 0, 0, .8);
 }
 
 #game canvas {
@@ -34,6 +85,14 @@ body {
   image-rendering: -webkit-crisp-edges;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+}
+
+main {
+  display: block;
+}
+
+#controlsLegend {
+  display: none;
 }
 
 #controller {
@@ -241,6 +300,43 @@ body {
 
 /* Devices large enough for landscape */
 @media only screen and (min-width: 300px) and (orientation: landscape) {
+  main {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  #game {
+    width: 640px;
+  }
+  #controlsLegend {
+    position: absolute;
+    left: 256px;
+    height: 100vh;
+    align-items: center;
+    display: flex;
+    gap: 16px;
+  }
+  legend {
+    color: #09475d;
+    font-size: 20pt;
+  }
+  #colSelectorAnchor {
+    width: 640px;
+  }
+  #controlsLegendLeft {
+    text-align: right;
+  }
+  #controlsLegendRight {
+    font-weight: bold;
+  }
+  p {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 620px;
+  }
   #controller {
     bottom: 50%;
     transform: translateY(50%);
