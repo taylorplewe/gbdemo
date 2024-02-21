@@ -17,14 +17,14 @@
 	; plr_y
 	; plr_state
 		rsreset
-		def PLR_STATE_IDLE rb 1
-		def PLR_STATE_WALK rb 1
-		def PLR_STATE_RUN rb 1
-		def PLR_STATE_SHOOT rb 1
-		def PLR_STATE_SHOOT_KICK rb 1
-		def PLR_STATE_JUMP rb 1
-		def PLR_STATE_FALL rb 1
-		def PLR_STATE_CROUCH rb 1
+		def PLR_STATE_IDLE rb
+		def PLR_STATE_WALK rb
+		def PLR_STATE_RUN rb
+		def PLR_STATE_SHOOT rb
+		def PLR_STATE_SHOOT_KICK rb
+		def PLR_STATE_JUMP rb
+		def PLR_STATE_FALL rb
+		def PLR_STATE_CROUCH rb
 
 def PLR_WIDTH = 16
 def PLR_HEIGHT = 16
@@ -219,7 +219,7 @@ def RUN_SPEED = $0101
 def plr_shoot_release_ctr_AMT = 12
 plr_Move:
 	rsset LOCAL
-	def plr_Move_running rb 1
+	def plr_Move_running rb
 
 	macro plr_Move_mv
 		ld bc, \1
@@ -443,7 +443,7 @@ plr_Ground:
 
 plr_Draw:
 	rsset LOCAL
-	def plr_Draw_anim_spd rb 1
+	def plr_Draw_anim_spd rb
 	; e - # tiles per frame
 
 	; go to animation data (.anim:)
