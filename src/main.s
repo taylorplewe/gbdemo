@@ -176,7 +176,6 @@ start:
 	ldh [rNR50], a
 	
 	call title_Init
-	; println {@}
 	ld hl, on_title
 	inc [hl]
 	ld a, LCDCF_ON | LCDCF_BGON | LCDCF_WINON | LCDCF_BLK21 | LCDCF_WIN9C00
@@ -299,7 +298,7 @@ vblank:
 
 	.end:
 	pop_all
-	ccf ; let comm_WaitForVblank know who's the real slim shady (clear the carry flag)
+	ccf ; let vbl know who's the real slim shady (clear the carry flag)
 	reti
 
 stat:
@@ -323,7 +322,6 @@ run_dma:
 		jr nz, .wait    ; 3 cycles
     ret
 run_dma_end:
-	; println {@}
 
 section "Tile data", ROM0
 
