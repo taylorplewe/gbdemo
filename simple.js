@@ -31,7 +31,7 @@ const CGB_COLOR_CURVE = 2;    // 0: none, 1: Sameboy "Emulate Hardware" 2: Gamba
 //   const DEFAULT_PALETTE_IDX = 1;
 //   const PALETTES = [16, 32, 64];
 //
-const DEFAULT_PALETTE_IDX = 79;
+const DEFAULT_PALETTE_IDX = 1;
 const PALETTES = [0, 75, 64];
 
 // It's probably OK to leave these alone. But you can tweak them to get better
