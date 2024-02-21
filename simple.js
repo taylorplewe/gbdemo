@@ -359,7 +359,14 @@ class Emulator {
   }
 
   updateOnscreenGamepad() {
+    this.updateLegendVisibility();
     $('#controller').style.display = this.touchEnabled ? 'block' : 'none';
+  }
+  
+  updateLegendVisibility() {
+    const legends = document.querySelectorAll('legend');
+    const visibility = this.touchEnabled ? 'hidden' : 'visible';
+    (legendEl => legendEl.style.visibility = visibility).apply(legends);
   }
 
   bindTouch() {
