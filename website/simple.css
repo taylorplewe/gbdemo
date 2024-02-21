@@ -20,12 +20,12 @@ body {
 
 #colSelector {
   position: absolute;
-  right: 16px;
+  right: .6em;
   top: 100%;
   cursor: pointer;
   display: flex;
   gap: 0;
-  margin-top: 16px;
+  margin-top: .6em;
   z-index: 10;
 }
 .colorInner {
