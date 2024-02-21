@@ -589,9 +589,9 @@ plr_AdvanceFrameAndPlaySound:
 	; hl - pointer to shadow data for current frame
 plr_DrawShadow:
 	rsset LOCAL+1 ; plr_Draw
-	def plr_DrawShadow_shadow_tiles_ind rb 2
-	def plr_DrawShadow_x rb 1
-	def plr_DrawShadow_y rb 1
+	def plr_DrawShadow_shadow_tiles_ind rw
+	def plr_DrawShadow_x rb
+	def plr_DrawShadow_y rb
 
 	hl_goto_hl
 	if_plr_facing_l
