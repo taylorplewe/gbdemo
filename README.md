@@ -1,4 +1,4 @@
-# Taylor's Dope Gameboy Demo
+# Taylor's 🔥 Gameboy Demo
 
 A Gameboy game your father would approve of.
 
