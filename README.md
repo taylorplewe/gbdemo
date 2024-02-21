@@ -10,7 +10,7 @@ A Gameboy game your father would approve of.
 
 Higher quality video: [https://youtu.be/AHXYl89QJTo](https://youtu.be/AHXYl89QJTo)
 
-Written in Sharp LR35902 (more or less Z80) assembly
+Written in Sharp LR35902 assembly (nearly identical to z80 assembly)
 
 Much help from [gbdev.io](https://gbdev.io/pandocs/)
 
