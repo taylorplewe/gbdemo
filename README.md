@@ -4,7 +4,7 @@ A Gameboy game your father would approve of.
 
 ![tdgbd](https://github.com/taylorplewe/tdgbd/assets/69979860/57009502-603d-42fc-bffa-14dc956b1333)
 
-### [Play it in the browser](https://taylorplewe.github.io/tdgbd/)
+### [Play it in the browser](https://taylorplewe.github.io/tpfire/)
 
 ### Download just the game ROM: [tpfire.gb](bin/tpfire.gb)
 
