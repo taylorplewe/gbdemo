@@ -1,6 +1,6 @@
 # Taylor's 🔥 Gameboy Demo
 
-A Gameboy game your father would approve of.
+A Gameboy game your father would approve of
 
 ![tdgbd](https://github.com/taylorplewe/tdgbd/assets/69979860/57009502-603d-42fc-bffa-14dc956b1333)
 
@@ -24,3 +24,4 @@ credit to the authors of
 - [yychr](https://www.romhacking.net/utilities/958/) graphics editor
 - [RGBDS Z80](https://marketplace.visualstudio.com/items?itemName=donaldhays.rgbds-z80) VSCode extension
 - [Mesen](https://mesen.ca) emulator
+- [binjgb](https://github.com/binji/binjgb) emulator
