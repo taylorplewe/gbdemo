@@ -60,7 +60,7 @@ p {
   font-style: italic;
   font-weight: 600;
   color: #09475d;
-  margin-top: 16px;
+  margin-block-start: .5em;
   margin-left: 16px;
   margin-right: 16px;
   margin-bottom: 0;
@@ -107,7 +107,7 @@ main {
 
 #controller_dpad {
   position: absolute;
-  bottom: 20px;
+  bottom: 0px;
   left: 0px;
   width: 184px;
   height: 184px;
@@ -118,13 +118,7 @@ main {
   display: block;
   width: 48px;
   height: 48px;
-  background: #5c5c5c;
-  background: radial-gradient(
-    ellipse at center,
-    #5c5c5c 0%,
-    #555 59%,
-    #5c5c5c 60%
-  );
+  background: transparent;
   position: absolute;
   left: 68px;
   top: 68px;
@@ -136,20 +130,24 @@ main {
   top: 68px;
   width: 48px;
   height: 48px;
-  background: #666;
-  background: radial-gradient(ellipse at center, #666 0%, #5c5c5c 80%);
+  background: transparent;
+  border-top: 1px solid #0d6a8c;
+  border-left: 1px solid #0d6a8c;
+  border-bottom: 1px solid #0d6a8c;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
 }
 
 #controller_right {
   position: absolute;
-  left: 116px;
+  left: 117px;
   top: 68px;
   width: 48px;
   height: 48px;
-  background: #666;
-  background: radial-gradient(ellipse at center, #666 0%, #5c5c5c 80%);
+  background: transparent;
+  border-top: 1px solid #0d6a8c;
+  border-right: 1px solid #0d6a8c;
+  border-bottom: 1px solid #0d6a8c;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
 }
@@ -160,8 +158,10 @@ main {
   top: 20px;
   width: 48px;
   height: 48px;
-  background: #666;
-  background: radial-gradient(ellipse at center, #666 0%, #5c5c5c 80%);
+  background: transparent;
+  border-top: 1px solid #0d6a8c;
+  border-left: 1px solid #0d6a8c;
+  border-right: 1px solid #0d6a8c;
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 }
@@ -169,11 +169,13 @@ main {
 #controller_down {
   position: absolute;
   left: 68px;
-  top: 116px;
+  top: 118px;
   width: 48px;
   height: 48px;
-  background: #666;
-  background: radial-gradient(ellipse at center, #666 0%, #5c5c5c 80%);
+  background: transparent;
+  border-bottom: 1px solid #0d6a8c;
+  border-left: 1px solid #0d6a8c;
+  border-right: 1px solid #0d6a8c;
   border-bottom-left-radius: 4px;
   border-bottom-right-radius: 4px;
 }
@@ -194,22 +196,21 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: bold;
   font-size: 32px;
-  color: #440f1f;
+  color: #0d6a8c;
   line-height: 64px;
   width: 64px;
   height: 64px;
+  border: 1px solid #0d6a8c;
   border-radius: 64px;
-  background: #870a4c;
-  background: radial-gradient(ellipse at center, #ab1465 0%, #8b1e57 100%);
+  background: transparent;
   box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.2);
 }
 
 .capsuleBtn {
   font-weight: bold;
   font-size: 10px;
-  color: #111;
+  color: #0d6a8c;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -217,9 +218,9 @@ main {
   text-transform: uppercase;
   width: 64px;
   height: 32px;
+  border: 1px solid #0d6a8c;
   border-radius: 40px;
-  background: #222;
-  background: radial-gradient(ellipse at center, #666 0%, #555 100%);
+  background: transparent;
   box-shadow: 0px 4px 5px rgba(0, 0, 0, 0.2);
 }
 
