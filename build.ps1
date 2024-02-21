@@ -1,4 +1,4 @@
-set-variable program_name "tdgbd"
+set-variable program_name "tpfire"
 
 rgbasm src/main.s -o bin/main.o -Wall
 rgblink -o bin/${program_name}.gb --map bin/${program_name}.map bin/main.o
