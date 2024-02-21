@@ -18,17 +18,15 @@ body {
   overflow: hidden;
 }
 
-#colSelectorAnchor {
-  position: relative;
-  width: 100%;
-}
 #colSelector {
   position: absolute;
   right: 16px;
+  top: 100%;
   cursor: pointer;
   display: flex;
   gap: 0;
   margin-top: 16px;
+  z-index: 10;
 }
 .colorInner {
   width: 20px;
@@ -42,7 +40,7 @@ body {
   border-left: 1px solid var(--color-bright);
 }
 .colSelectorButton:hover {
-  background-color: #var(--color-text);
+  background-color: var(--color-text);
 }
 .colSelectorButton:first-of-type {
   border-radius: 12px 0 0 12px;
@@ -65,11 +63,12 @@ body {
 p {
   font-style: italic;
   font-weight: 600;
-  color: #var(--color-text);
+  color: var(--color-text);
   margin-block-start: .5em;
-  margin-left: 16px;
-  margin-right: 16px;
+  margin-left: .5em;
+  margin-right: .5em;
   margin-bottom: 0;
+  z-index: 10;
 }
 
 a {
@@ -317,17 +316,18 @@ main {
   }
   #game {
     width: 640px;
+    position: relative;
   }
   #controlsLegend {
     position: absolute;
-    left: 256px;
-    height: 100vh;
+    left: -200px;
+    bottom: 0;
     align-items: center;
     display: flex;
     gap: 16px;
   }
   legend {
-    color: #var(--color-text);
+    color: var(--color-text);
     font-size: 20pt;
   }
   #colSelectorAnchor {

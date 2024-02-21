@@ -13,24 +13,22 @@
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
 </head>
 <body>
-  <div id="controlsLegend">
-    <legend id="controlsLegendLeft">
-      <i class="ph ph-arrow-up"></i>
-      <br>
-      <i class="ph ph-arrow-left"></i>
-      <br>
-      <i class="ph ph-arrow-down"></i>
-      <br>
-      <i class="ph ph-arrow-right"></i>
-      <br>A<br>B<br>Start
-    </legend>
-    <legend id="controlsLegendRight">W<br>A<br>S<br>D<br>L<br>K<br>Enter</legend>
-  </div>
   <main>
     <div id="game">
       <canvas id="mainCanvas" width="160" height="144">No Canvas Support</canvas>
-    </div>
-    <div id="colSelectorAnchor">
+      <div id="controlsLegend">
+        <legend id="controlsLegendLeft">
+          <i class="ph ph-arrow-up"></i>
+          <br>
+          <i class="ph ph-arrow-left"></i>
+          <br>
+          <i class="ph ph-arrow-down"></i>
+          <br>
+          <i class="ph ph-arrow-right"></i>
+          <br>A<br>B<br>Start
+        </legend>
+        <legend id="controlsLegendRight">W<br>A<br>S<br>D<br>L<br>K<br>Enter</legend>
+      </div>
       <div id="colSelector">
         <div class="colSelectorButton" onclick="changePal(0)">
           <div class="colorInner" id="colGray"></div>
