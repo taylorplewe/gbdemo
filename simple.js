@@ -364,9 +364,9 @@ class Emulator {
   }
   
   updateLegendVisibility() {
-    const legends = document.querySelectorAll('legend');
+    const legends = [...document.querySelectorAll('legend')];
     const visibility = this.touchEnabled ? 'hidden' : 'visible';
-    (legendEl => legendEl.style.visibility = visibility).apply(legends);
+    legends.forEach(l => l.style.visibility = visibility);
   }
 
   bindTouch() {
