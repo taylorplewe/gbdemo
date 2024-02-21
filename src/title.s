@@ -1,6 +1,3 @@
-; idk which one of these I want
-; txt_title_allcaps: db "TAYLOR PLEWE"
-; txt_title_alllower: db "taylor plewe"
 txt_title_titlecase: db "Taylor Plewe"
 txt_title_titlecase_dark: db $db,$dc,$dd,$de,$df,$e0,$a0,$fb,$de,$fc,$fd,$fc
 def TITLE_TEXT_VRAM_ADDR = $9d24
