@@ -15,10 +15,10 @@ def BUBBLE_TILE_2 = $62
 
 ; careful with these
 rsset LOCAL
-def signpost_y rb 1
-def signpost_x rb 1
-def signpost_text_addr rb 2
-def signpost_bools rb 1
+def signpost_y rb
+def signpost_x rb
+def signpost_text_addr rw
+def signpost_bools rb
 
 def SIGNPOST_WIDTH = 16
 def SIGNPOST_HEIGHT = 16
