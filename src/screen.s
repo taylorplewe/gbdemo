@@ -51,10 +51,11 @@ scr_UpdateScroll:
 	.shrink_and_add_scroll_diff:
 		ld h, a
 		ld l, 0
-		rept 5
-		sra h
-		rr l
-		endr
+		; smooth motion
+			rept 5
+			sra h
+			rr l
+			endr
 		; add 16-bit scroll
 			ld a, [c]
 			add l
