@@ -47,7 +47,7 @@ scr_UpdateScroll:
 
 	; params:
 		; a - diff to divide
-		; hl - scroll_?+1
+		; c - scroll_?+1
 	.shrink_and_add_scroll_diff:
 		ld h, a
 		ld l, 0
