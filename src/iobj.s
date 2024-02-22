@@ -1,13 +1,13 @@
 	rsreset
-	def IOBJ_TYPE rb 1
-	def IOBJ_Y rb 1
-	def IOBJ_X rb 1
-	def IOBJ_SIZE rb 1 ; hhhhwwww
+	def IOBJ_TYPE rb
+	def IOBJ_Y rb
+	def IOBJ_X rb
+	def IOBJ_SIZE rb ; hhhhwwww
 	def IOBJ_DATA rb 2 ; type-specific
 	def sizeof_IOBJ = _RS
 	
 	rsset 1
-	def IOBJ_TYPE_SIGNPOST rb 1
+	def IOBJ_TYPE_SIGNPOST rb
 
 	def iobj_Clear equs "memset8 0, IOBJ, 256"
 
