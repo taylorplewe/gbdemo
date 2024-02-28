@@ -2,7 +2,7 @@ Pause:
 	ld a, 1
 	ldh [paused], a
 	xor a
-	ldh [rNR52], a
+	ldh [rNR52], a ; disable sound
 	call draw_FadeToWhite
 
 	; turn off screen
