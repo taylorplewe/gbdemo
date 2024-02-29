@@ -247,11 +247,13 @@ main {
 	opacity: 0.5;
 }
 
-#colSelector, #info {
-    visibility: hidden;
+@media (orientation: portrait) {
+	#colSelector, #info {
+		visibility: hidden;
+	}
 }
 
-@media (min-height: 650px) and (orientation: portrait) {
+@media (min-height: 650px) {
     #colSelector, #info {
         visibility: visible;
     }
