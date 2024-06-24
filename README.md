@@ -6,7 +6,7 @@ A Gameboy game your father would approve of
 
 ### [Play it in the browser](https://taylorplewe.github.io/gbdemo/)
 
-### Download just the game ROM: [tpfire.gb](bin/tpfire.gb)
+### Download just the game ROM: [tpfire.gb](https://raw.githubusercontent.com/taylorplewe/gbdemo/main/bin/tpfire.gb)
 
 Higher quality video: [https://youtu.be/AHXYl89QJTo](https://youtu.be/AHXYl89QJTo)
 
